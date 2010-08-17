@@ -5,6 +5,33 @@
 
 #include "jabbersession.hpp"
 
+JabberNode::JabberNode(JabberElementNode *parent) : m_parent(parent) {
+}
+
+JabberNode::~JabberNode() {}
+
+JabberElementNode::JabberElementNode(JabberElementNode *parent, const Glib::ustring &name, const xmlpp::SaxParser::AttributeList &attributes) : JabberNode(parent), m_name(name), m_attributes(attributes) {
+}
+
+JabberElementNode::~JabberElementNode() {
+  // SYZYGY -- need a destructor here
+}
+
+JabberTextNode::JabberTextNode(JabberElementNode *parent, const Glib::ustring nodeData) : JabberNode(parent), m_data(nodeData) {
+}
+
+JabberTextNode::~JabberTextNode() {
+  // SYZYGY -- need a destructor here
+}
+
+JabberCommentNode::JabberCommentNode(JabberElementNode *parent, const Glib::ustring nodeData) : JabberNode(parent), m_data(nodeData) {
+}
+
+JabberCommentNode::~JabberCommentNode() {
+  // SYZYGY -- need a destructor here
+}
+
+
 #define BUFFERLENGTH 2000
 
 JabberSession::JabberSession(const std::string &host, unsigned short port, bool isSecure) : m_s(host, port, isSecure) {
@@ -12,6 +39,7 @@ JabberSession::JabberSession(const std::string &host, unsigned short port, bool 
   m_depth = 0;
   m_idCount = 0;
   pthread_mutex_init(&m_stateMutex, NULL);
+  m_node = NULL;
 
   if (0 == pthread_create(&m_listenerThread, NULL, ListenerThreadFunction, this)) {
     // SYZYGY -- RFC 3920 specifies an "xml:lang" attribute and a "version" attribute
@@ -79,7 +107,22 @@ void JabberSession::on_start_element(const Glib::ustring &name, const AttributeL
     }
   }
   else {
+    if (1 == m_depth) {
+      if (("message" == name) || ("presence" == name) || ("iq" == name)) {
+	m_node = new JabberElementNode(NULL, name, attributes);
+      }
+      else {
+	m_state = Error;
+      }
+    }
+    else {
+      // std::cout << "Recursing into node " << name << std::endl;
+      JabberElementNode *temp = new JabberElementNode(m_node, name, attributes);
+      m_node->m_children.push_back(temp);
+      m_node = temp;
+    }
   }
+  ++m_depth;
   pthread_mutex_unlock(&m_stateMutex);
 }
 
@@ -87,6 +130,58 @@ void JabberSession::on_start_element(const Glib::ustring &name, const AttributeL
 void JabberSession::on_end_element(const Glib::ustring &name) {
   pthread_mutex_lock(&m_stateMutex);
   std::cout << "on_end_element(): " << name << std::endl;
+  --m_depth;
+  if (NULL != m_node->m_parent) {
+    m_node = m_node->m_parent;
+  }
+  if (1 == m_depth) {
+    Glib::ustring id;
+    bool isResponse = false;
+
+    if ("iq" == name) {
+      // IF it's not an iq tag with a type attribute of "result", then it's not a response, so I don't need to do
+      // the response processing logic
+      for(xmlpp::SaxParser::AttributeList::const_iterator i = m_node->m_attributes.begin(); i != m_node->m_attributes.end(); ++i) {
+	if (i->name == "id") {
+	  id = i->value;
+	}
+	if (i->name == "type") {
+	  isResponse = (i->value == "result") || (i->value == "error");
+	}
+      }
+
+      if (isResponse) {
+	jabberEventMap_t::iterator i = m_jabberEvents.find(id);
+	if (m_jabberEvents.end() != i) {
+	  // SYZYGY
+	  // i->second->n = m_node;
+	  pthread_mutex_unlock(&i->second->c);
+	  m_jabberEvents.erase(i);
+	}
+	m_node = NULL;
+      }
+      else {
+	// SYZYGY
+	// HandleIqRequest();
+      }
+    }
+    else {
+      if ("presence" == name) {
+	// SYZYGY
+	// HandlePresenceRequest();
+      }
+      else {
+	if ("message" == name) {
+	  // SYZYGY
+	  // HandleMessageRequest();
+	}
+	else {
+	  // SYZYGY -- I may need to log this
+	  // std::cout << "I don't know how to handle a message of type \"" << name << "\"" << std::endl;
+	}
+      }
+    }
+  }
   pthread_mutex_unlock(&m_stateMutex);
 }
 
@@ -94,6 +189,10 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
 void JabberSession::on_characters(const Glib::ustring &characters) {
   pthread_mutex_lock(&m_stateMutex);
   std::cout << "on_characters(): " << characters << std::endl;
+  if (NULL != m_node) {
+    JabberTextNode *node = new JabberTextNode(m_node, characters);
+    m_node->m_children.push_back(node);
+  }
   pthread_mutex_unlock(&m_stateMutex);
 }
 
@@ -159,33 +258,41 @@ void *JabberSession::ListenerThreadFunction(void *data) {
 }
 
 
-const Stanza *JabberSession::SendRequest(const Stanza &request) {
-  bool expectingReply = true;
+const Stanza *JabberSession::SendMessage(const Stanza &request,  bool expectingReply) {
   jabberEvent_t *e = NULL;
   // SYZYGY -- I need to rework this logic because currently there's no way to send a message that
   // SYZYGY -- doesn't have an ID
+  const std::string *xml;
   if (expectingReply) {
     pthread_mutex_lock(&m_stateMutex);
     unsigned long local_count = m_idCount++;
     e = new(jabberEvent_t);
     std::ostringstream id;
     id << std::hex << std::setw(8) << std::setfill('0') << local_count;
-    const std::string *xml = request.render(id.str());
+    std::string *id_string = new std::string(id.str());
+    xml = request.render(id_string);
+    delete id_string;
     pthread_mutex_init(&e->c, NULL);
     pthread_mutex_lock(&e->c);
     m_jabberEvents[id.str()] = e;
     pthread_mutex_unlock(&m_stateMutex);
-    m_s.Send(*xml);
   }
+  else {
+    xml = request.render(NULL);
+  }
+  m_s.Send(*xml);
   if (expectingReply) {
     // pthread_mutex_lock(&e->c);
 
     // JabberElementNode *result = e->n;
-    delete e;
+    // delete e;
     // return result;
+    return &request;  // SYZYGY -- NO NO NO  this must be the response
   }
 
-  return &request;  // SYZYGY -- NO NO NO  this must be the response
+  // It falls through to here if it's not expecting a reply.  Since I'm not expecting
+  // a reply, I can return a pointer to nothing
+  return NULL;
 }
 
 

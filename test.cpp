@@ -10,11 +10,9 @@ int main(void) {
   // JabberIqRegister register_stanza("jabber-bot", "zu2ooHah", "TestBot");
   // session.SendRequest(register_stanza);
   JabberIqAuth login_stanza("jabber-bot", "zu2ooHah", "TestBot");
-  session.SendRequest(login_stanza);
+  session.SendMessage(login_stanza, true);
 
-  sleep(10);
-
-  std::cout << "The authentication request is \"" << *login_stanza.render("00000000") << "\"" << std::endl;
+  sleep(1);
 
   return 0;
 }

@@ -22,7 +22,7 @@ JabberIqAuth::~JabberIqAuth(void) {
 }
 
 
-const std::string *JabberIqAuth::render(const std::string &id) const {
+const std::string *JabberIqAuth::render(const std::string *id) const {
   std::ostringstream body;
 
   body << "<username>" << *m_username << "</username>";

@@ -57,7 +57,7 @@ public:
     ~Socket();
     ssize_t Receive(uint8_t *buffer, size_t size);
     ssize_t Send(const std::string &string);
-    ssize_t Send(const uint8_t *data, size_t length);
+    ssize_t Send(const uint8_t *data, int length);
     bool GoEncrypted() throw(SocketSSLErrorException);
     bool IsEncrypted() const { return isSecure; }
 };

@@ -65,10 +65,13 @@ const std::string &Stanza::Id(void) const  {
 }
 
 
-const std::string *Stanza::renderStanza(const std::string &id, const std::string &tag, const std::string &body) const {
+const std::string *Stanza::renderStanza(const std::string *id, const std::string &tag, const std::string &body) const {
   std::ostringstream result;
 
-  result << "<" << tag << " id='" << id << "'";
+  result << "<" << tag;
+  if (NULL != id) {
+    result << " id='" << *id << "'";
+  }
   if (NULL != m_to) {
     result << " to='" << *m_to << "'";
   }

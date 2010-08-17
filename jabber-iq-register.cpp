@@ -22,7 +22,7 @@ JabberIqRegister::~JabberIqRegister(void) {
 }
 
 
-const std::string *JabberIqRegister::render(const std::string &id) const {
+const std::string *JabberIqRegister::render(const std::string *id) const {
   std::ostringstream body;
 
   body << "<username>" << *m_username << "</username>";

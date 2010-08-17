@@ -24,10 +24,10 @@ public:
   const std::string &Type(void) const;
   const std::string &Id(void) const;
 
-  virtual const std::string *render(const std::string &id) const = 0;
+  virtual const std::string *render(const std::string *id) const = 0;
 
 protected:
-  const std::string *renderStanza(const std::string &id, const std::string &tag, const std::string &body) const;
+  const std::string *renderStanza(const std::string *id, const std::string &tag, const std::string &body) const;
 };
 
 #endif // !defined(_STANZA_HPP_INCLUDED_)

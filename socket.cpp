@@ -27,7 +27,7 @@ int cert_verify_callback(int ok, X509_STORE_CTX *store) {
 }
 
 
-long post_connection_check(SSL *ssl, char *host) {
+long post_connection_check(SSL *ssl, const char *host) {
     // SYZYGY -- they have GOT to be kidding!
 
     return SSL_get_verify_result(ssl);
@@ -146,7 +146,8 @@ void Socket::init(const std::string &destination, bool startEncrypted) throw(Soc
 	}
 
 	int err;
-	if ((err = post_connection_check(ssl, (const char *)SERVER)) != X509_V_OK) {
+	std::string server(SERVER);
+	if ((err = post_connection_check(ssl, server.c_str())) != X509_V_OK) {
 	  // SYZYGY -- log
 	  std::cerr << "-Error: peer certificate: " << X509_verify_cert_error_string(err) << std::endl;
 	  throw SocketSSLErrorException(ERR_error_string(ERR_get_error(), NULL));
@@ -176,7 +177,7 @@ Socket::~Socket() {
 	SSL_free(ssl);
     }
     else {
-	BIO_reset(bio);
+        (void) BIO_reset(bio);
 
 	BIO_free_all(bio);
     }
@@ -184,16 +185,16 @@ Socket::~Socket() {
 
 ssize_t Socket::Send(const std::string &string) {
   std::cout << "Sending: \"" << string << "\"" << std::endl;
-  Send((uint8_t *) string.c_str(), string.size());
+  return Send((uint8_t *) string.c_str(), string.size());
 }
 
-ssize_t Socket::Send(const uint8_t *data, size_t length) {
+ssize_t Socket::Send(const uint8_t *data, int length) {
     int result = 0;
 
     if (isSecure) {
 	size_t err = 0;
 
-	for (result=0; result< length; ) {
+	for (result=0; result < length; ) {
 	    err = SSL_write(ssl, data + result, length - result);
 #if 0
 	    // std::cerr << "Send returned: " << err << std::endl;
