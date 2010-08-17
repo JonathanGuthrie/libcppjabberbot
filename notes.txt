@@ -1,0 +1,19 @@
+This is intended to be a C++ jabber client library.  I tried to base my 
+affirmations bot on a jabber client class called "JabberSession", but I
+think it's too low a level to really work for me.  What I think I want is
+for the jabber client library to define classes for everything that the client
+knows how to deal with.  Said classes includes space for all the different
+kinds of things that are expected in that particular type of return value.
+
+Then, some sort of dispatcher can be called to deal with each stanza without
+having to know much of anything at all about how the stanza is built up.
+
+I suppose I should start with operations in the jabber:iq:roster and
+jabber:iq.auth namespaces.
+
+So, how should it work?  Well, I think the best approach would be for the
+client library to create an appropriate message object and then invoke a
+handler, passing it a pointer to that object.  That handler would be set up
+to expect a pointer to some stanza base class and registered to handle
+messages for one or more namespace types.
+

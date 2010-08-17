@@ -1,0 +1,316 @@
+Okay, here's what it looks like when the jabber bot starts and then communication happens, and then the jabber bot exits
+
+Received chars
+   "<?xml version='1.0'?>
+    <stream:stream xmlns:stream='http://etherx.jabber.org/streams' id='4A1A01C9' xmlns='jabber:client' from='jabber.brokersys.com'>"
+
+The xml is 
+   "<iq type='set' id='00000000'>
+      <query xmlns='jabber:iq:auth'>
+        <username>jabber-bot</username>
+        <password>zu2ooHah</password>
+        <resource>JabberBot</resource>
+      </query>
+    </iq>"
+
+Received chars
+   "<iq type='result' id='00000000'/>"
+
+Logged in successfully
+
+The xml is 
+   "<presence type='available' ></presence>"
+
+The xml is
+   "<iq type='get' id='00000001'>
+      <query xmlns='jabber:iq:roster'/>
+    </iq>"
+
+Received chars
+   "<presence from='cybersmythe@jabber.brokersys.com/Gajim' id='27' to='jabber-bot@jabber.brokersys.com'>
+      <priority>50</priority>
+      <x xmlns='vcard-temp:x:update'>
+        <photo/>
+      </x>
+      <c xmlns='http://jabber.org/protocol/caps' node='http://gajim.org' ver='QXz7szlMhl5PFmOY5DSIQF2BhKE=' hash='sha-1'/>
+      <x xmlns='jabber:x:delay' from='cybersmythe@jabber.brokersys.com/Gajim' stamp='20090525T02:23:12'/>
+    </presence>"
+
+Received chars 
+   "<iq type='result' id='00000001' from='jabber-bot@jabber.brokersys.com/JabberBot'>
+      <query xmlns='jabber:iq:roster'>
+        <item jid='cybersmythe@jabber.brokersys.com' subscription='both'/>
+      </query>
+    </iq>"
+
+The roster query returns
+   "<iq type="result" id="00000001" from="jabber-bot@jabber.brokersys.com/JabberBot">
+      <query xmlns="jabber:iq:roster">
+        <item jid="cybersmythe@jabber.brokersys.com" subscription="both"/>
+      </query>
+    </iq>"
+
+The xml is
+   "<iq type='get' id='00000002'>
+      <query xmlns='jabber:iq:roster'/>
+    </iq>"
+
+
+Received chars
+   "<iq type='result' id='00000002' from='jabber-bot@jabber.brokersys.com/JabberBot'>
+      <query xmlns='jabber:iq:roster'>
+        <item jid='cybersmythe@jabber.brokersys.com' subscription='both'/>
+      </query>
+    </iq>"
+
+The roster query returns
+   "<iq type="result" id="00000002" from="jabber-bot@jabber.brokersys.com/JabberBot">
+      <query xmlns="jabber:iq:roster">
+        <item jid="cybersmythe@jabber.brokersys.com" subscription="both"/>
+      </query>
+    </iq>"
+
+Received chars
+   "<message to='jabber-bot@jabber.brokersys.com' type='chat' id='51' from='cybersmythe@jabber.brokersys.com/Gajim'>
+      <body>Test message</body>
+      <active xmlns='http://jabber.org/protocol/chatstates'/>
+      <x xmlns='jabber:x:event'>
+        <composing/>
+      </x>
+      <request xmlns='urn:xmpp:receipts'/>
+      <thread>jlIGUudXfTopwHQkcWqyoJGDGVrtDRkB</thread>
+    </message>"
+
+Got message 
+   "<message to="jabber-bot@jabber.brokersys.com" type="chat" id="51" from="cybersmythe@jabber.brokersys.com/Gajim">
+      <body>Test message</body>
+      <active xmlns="http://jabber.org/protocol/chatstates"/>
+      <x xmlns="jabber:x:event">
+        <composing/>
+      </x>
+      <request xmlns="urn:xmpp:receipts"/>
+      <thread>jlIGUudXfTopwHQkcWqyoJGDGVrtDRkB</thread>
+    </message>"
+
+The xml is
+   "<message to='cybersmythe@jabber.brokersys.com/Gajim' type='chat' id='51' >
+      <body>Test message</body>
+      <active xmlns="http://jabber.org/protocol/chatstates"/>
+      <x xmlns="jabber:x:event">
+        <composing/>
+      </x>
+      <request xmlns="urn:xmpp:receipts"/>
+      <thread>jlIGUudXfTopwHQkcWqyoJGDGVrtDRkB</thread>
+    </message>"
+
+Received chars
+   "<message to='jabber-bot@jabber.brokersys.com/JabberBot' type='chat' id='51' from='cybersmythe@jabber.brokersys.com/Gajim'>
+      <received xmlns='urn:xmpp:receipts'/>
+      <thread>jlIGUudXfTopwHQkcWqyoJGDGVrtDRkB</thread>
+    </message>"
+
+Got message
+   "<message to="jabber-bot@jabber.brokersys.com/JabberBot" type="chat" id="51" from="cybersmythe@jabber.brokersys.com/Gajim">
+      <received xmlns="urn:xmpp:receipts"/>
+      <thread>jlIGUudXfTopwHQkcWqyoJGDGVrtDRkB</thread>
+    </message>"
+
+The xml is
+   "<message to='cybersmythe@jabber.brokersys.com/Gajim' type='chat' id='51' >
+      <received xmlns="urn:xmpp:receipts"/>
+      <thread>jlIGUudXfTopwHQkcWqyoJGDGVrtDRkB</thread>
+    </message>"
+
+Received chars
+   "<message to='jabber-bot@jabber.brokersys.com' type='chat' id='52' from='cybersmythe@jabber.brokersys.com/Gajim'>
+      <gone xmlns='http://jabber.org/protocol/chatstates'/>
+      <thread>jlIGUudXfTopwHQkcWqyoJGDGVrtDRkB</thread>
+    </message>"
+
+Got message
+   "<message to="jabber-bot@jabber.brokersys.com" type="chat" id="52" from="cybersmythe@jabber.brokersys.com/Gajim">
+      <gone xmlns="http://jabber.org/protocol/chatstates"/>
+      <thread>jlIGUudXfTopwHQkcWqyoJGDGVrtDRkB</thread>
+    </message>"
+
+The xml is
+   "<message to='cybersmythe@jabber.brokersys.com/Gajim' type='chat' id='52' >
+      <gone xmlns="http://jabber.org/protocol/chatstates"/>
+      <thread>jlIGUudXfTopwHQkcWqyoJGDGVrtDRkB</thread>
+    </message>"
+
+==============================================================================================================================
+Here's what happens when the jabber bot starts, and the far end user logs off, and the jabber bot exits
+
+
+Received 148 chars
+   "<?xml version='1.0'?>
+      <stream:stream xmlns:stream='http://etherx.jabber.org/streams' id='4A1A0679' xmlns='jabber:client' from='jabber.brokersys.com'>"
+
+The xml is
+   "<iq type='set' id='00000000'>
+      <query xmlns='jabber:iq:auth'>
+        <username>jabber-bot</username>
+        <password>zu2ooHah</password>
+        <resource>JabberBot</resource>
+      </query>
+    </iq>"
+
+Received 33 chars
+   "<iq type='result' id='00000000'/>"
+
+Logged in successfully
+
+The xml is
+   "<presence type='available' ></presence>"
+
+The xml is
+   "<iq type='get' id='00000001'>
+      <query xmlns='jabber:iq:roster'/>
+    </iq>"
+
+Received 393 chars
+   "<presence from='cybersmythe@jabber.brokersys.com/Gajim' id='27' to='jabber-bot@jabber.brokersys.com'>
+      <priority>50</priority>
+      <x xmlns='vcard-temp:x:update'>
+        <photo/>
+      </x>
+      <c xmlns='http://jabber.org/protocol/caps' node='http://gajim.org' ver='QXz7szlMhl5PFmOY5DSIQF2BhKE=' hash='sha-1'/>
+      <x xmlns='jabber:x:delay' from='cybersmythe@jabber.brokersys.com/Gajim' stamp='20090525T02:23:12'/>
+    </presence>"
+
+Received 192 chars
+   "<iq type='result' id='00000001' from='jabber-bot@jabber.brokersys.com/JabberBot'>
+      <query xmlns='jabber:iq:roster'>
+        <item jid='cybersmythe@jabber.brokersys.com' subscription='both'/>
+      </query>
+    </iq>"
+
+The roster query returns
+   "<iq type="result" id="00000001" from="jabber-bot@jabber.brokersys.com/JabberBot">
+      <query xmlns="jabber:iq:roster">
+        <item jid="cybersmythe@jabber.brokersys.com" subscription="both"/>
+      </query>
+    </iq>"
+
+The xml is
+   "<iq type='get' id='00000002'>
+      <query xmlns='jabber:iq:roster'/>
+    </iq>"
+
+Received 192 chars
+   "<iq type='result' id='00000002' from='jabber-bot@jabber.brokersys.com/JabberBot'>
+      <query xmlns='jabber:iq:roster'>
+        <item jid='cybersmythe@jabber.brokersys.com' subscription='both'/>
+      </query>
+    </iq>"
+
+The roster query returns
+   "<iq type="result" id="00000002" from="jabber-bot@jabber.brokersys.com/JabberBot">
+      <query xmlns="jabber:iq:roster">
+        <item jid="cybersmythe@jabber.brokersys.com" subscription="both"/>
+      </query>
+    </iq>"
+
+Received 188 chars
+   "<presence xmlns='jabber:client' type='unavailable' from='cybersmythe@jabber.brokersys.com/Gajim' to='jabber-bot@jabber.brokersys.com'>
+      <x xmlns='vcard-temp:x:update'>
+        <photo/>
+      </x>
+    </presence>"
+
+
+=================================================================================================================================================
+Here's what happens when the jabber bot starts, and the user comes on line, and the jabber bot exits
+
+Received 148 chars
+   "<?xml version='1.0'?>
+      <stream:stream xmlns:stream='http://etherx.jabber.org/streams' id='4A1A06F0' xmlns='jabber:client' from='jabber.brokersys.com'>"
+
+The xml is
+   "<iq type='set' id='00000000'>
+      <query xmlns='jabber:iq:auth'>
+        <username>jabber-bot</username>
+        <password>zu2ooHah</password>
+        <resource>JabberBot</resource>
+      </query>
+    </iq>"
+
+Received 33 chars
+   "<iq type='result' id='00000000'/>"
+
+Logged in successfully
+
+The xml is
+   "<presence type='available' ></presence>"
+
+The xml is
+   "<iq type='get' id='00000001'>
+      <query xmlns='jabber:iq:roster'/>
+    </iq>"
+
+Received 192 chars
+   "<iq type='result' id='00000001' from='jabber-bot@jabber.brokersys.com/JabberBot'>
+      <query xmlns='jabber:iq:roster'>
+        <item jid='cybersmythe@jabber.brokersys.com' subscription='both'/>
+      </query>
+    </iq>"
+
+The roster query returns
+   "<iq type="result" id="00000001" from="jabber-bot@jabber.brokersys.com/JabberBot">
+      <query xmlns="jabber:iq:roster">
+        <item jid="cybersmythe@jabber.brokersys.com" subscription="both"/>
+      </query>
+    </iq>"
+
+The xml is
+   "<iq type='get' id='00000002'>
+      <query xmlns='jabber:iq:roster'/>
+    </iq>"
+
+Received 192 chars
+   "<iq type='result' id='00000002' from='jabber-bot@jabber.brokersys.com/JabberBot'>
+      <query xmlns='jabber:iq:roster'>
+        <item jid='cybersmythe@jabber.brokersys.com' subscription='both'/>
+      </query>
+    </iq>"
+
+The roster query returns
+   "<iq type="result" id="00000002" from="jabber-bot@jabber.brokersys.com/JabberBot">
+      <query xmlns="jabber:iq:roster">
+        <item jid="cybersmythe@jabber.brokersys.com" subscription="both"/>
+      </query>
+    </iq>"
+
+Received 294 chars
+   "<presence from='cybersmythe@jabber.brokersys.com/Gajim' id='97' to='jabber-bot@jabber.brokersys.com'>
+      <priority>50</priority>
+      <x xmlns='vcard-temp:x:update'>
+        <photo/>
+      </x>
+      <c xmlns='http://jabber.org/protocol/caps' node='http://gajim.org' ver='QXz7szlMhl5PFmOY5DSIQF2BhKE=' hash='sha-1'/>
+    </presence>"
+
+Received 393 chars
+   "<presence from='cybersmythe@jabber.brokersys.com/Gajim' id='97' to='jabber-bot@jabber.brokersys.com'>
+      <priority>50</priority>
+      <x xmlns='vcard-temp:x:update'>
+        <photo/>
+      </x>
+      <c xmlns='http://jabber.org/protocol/caps' node='http://gajim.org' ver='QXz7szlMhl5PFmOY5DSIQF2BhKE=' hash='sha-1'/>
+      <x xmlns='jabber:x:delay' from='cybersmythe@jabber.brokersys.com/Gajim' stamp='20090525T02:48:24'/>
+    </presence>"
+
+
+===========================================================================================================
+So, the lessons are clear.  I must list the people I'm interested in using the
+roster.  I must also keep track of which users are logged in and where they are
+logged in from and what the priorities of the logins are, so that I can build
+a list of destinations, sorted by priority.
+
+The roster is primarily useful for adjusting statuses.  Subscription of "from"
+should result in a presence "subscribed" command.  Subscription of "to" should
+result in a presence "unsubscribed" command.
+
+If it's both, then I set up an entry in the users table with no presence items
+in it.

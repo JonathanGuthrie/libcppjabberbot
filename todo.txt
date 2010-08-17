@@ -1,0 +1,7 @@
+done) define stanza base class
+
+2) build client class with ability to transmit certain defined stanzas
+
+3) build client class with ability with ability to understand and dispatch
+  a couple of different select stanzas (login and register)
+
