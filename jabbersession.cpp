@@ -5,33 +5,6 @@
 
 #include "jabbersession.hpp"
 
-JabberNode::JabberNode(JabberElementNode *parent) : m_parent(parent) {
-}
-
-JabberNode::~JabberNode() {}
-
-JabberElementNode::JabberElementNode(JabberElementNode *parent, const Glib::ustring &name, const xmlpp::SaxParser::AttributeList &attributes) : JabberNode(parent), m_name(name), m_attributes(attributes) {
-}
-
-JabberElementNode::~JabberElementNode() {
-  // SYZYGY -- need a destructor here
-}
-
-JabberTextNode::JabberTextNode(JabberElementNode *parent, const Glib::ustring nodeData) : JabberNode(parent), m_data(nodeData) {
-}
-
-JabberTextNode::~JabberTextNode() {
-  // SYZYGY -- need a destructor here
-}
-
-JabberCommentNode::JabberCommentNode(JabberElementNode *parent, const Glib::ustring nodeData) : JabberNode(parent), m_data(nodeData) {
-}
-
-JabberCommentNode::~JabberCommentNode() {
-  // SYZYGY -- need a destructor here
-}
-
-
 #define BUFFERLENGTH 2000
 
 JabberSession::JabberSession(const std::string &host, unsigned short port, bool isSecure) : m_s(host, port, isSecure) {
@@ -135,51 +108,22 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
     m_node = m_node->m_parent;
   }
   if (1 == m_depth) {
-    Glib::ustring id;
     bool isResponse = false;
 
-    if ("iq" == name) {
-      // IF it's not an iq tag with a type attribute of "result", then it's not a response, so I don't need to do
-      // the response processing logic
-      for(xmlpp::SaxParser::AttributeList::const_iterator i = m_node->m_attributes.begin(); i != m_node->m_attributes.end(); ++i) {
-	if (i->name == "id") {
-	  id = i->value;
-	}
-	if (i->name == "type") {
-	  isResponse = (i->value == "result") || (i->value == "error");
-	}
-      }
+    Stanza *message = Stanza::parse(m_node);
+    isResponse = ("result" == message->Type()) || ("error" == message->Type());
 
-      if (isResponse) {
-	jabberEventMap_t::iterator i = m_jabberEvents.find(id);
-	if (m_jabberEvents.end() != i) {
-	  // SYZYGY
-	  // i->second->n = m_node;
-	  pthread_mutex_unlock(&i->second->c);
-	  m_jabberEvents.erase(i);
-	}
-	m_node = NULL;
+    if (isResponse) {
+      jabberEventMap_t::iterator i = m_jabberEvents.find(message->Id());
+      if (m_jabberEvents.end() != i) {
+	i->second->s = message;
+	pthread_mutex_unlock(&i->second->c);
+	m_jabberEvents.erase(i);
       }
-      else {
-	// SYZYGY
-	// HandleIqRequest();
-      }
+      m_node = NULL;
     }
     else {
-      if ("presence" == name) {
-	// SYZYGY
-	// HandlePresenceRequest();
-      }
-      else {
-	if ("message" == name) {
-	  // SYZYGY
-	  // HandleMessageRequest();
-	}
-	else {
-	  // SYZYGY -- I may need to log this
-	  // std::cout << "I don't know how to handle a message of type \"" << name << "\"" << std::endl;
-	}
-      }
+      // SYZYGY -- dispatch the message to the handler, if any
     }
   }
   pthread_mutex_unlock(&m_stateMutex);
@@ -282,12 +226,11 @@ const Stanza *JabberSession::SendMessage(const Stanza &request,  bool expectingR
   }
   m_s.Send(*xml);
   if (expectingReply) {
-    // pthread_mutex_lock(&e->c);
+    pthread_mutex_lock(&e->c);
 
-    // JabberElementNode *result = e->n;
-    // delete e;
-    // return result;
-    return &request;  // SYZYGY -- NO NO NO  this must be the response
+    Stanza *result = e->s;
+    delete e;
+    return result;
   }
 
   // It falls through to here if it's not expecting a reply.  Since I'm not expecting
