@@ -3,48 +3,10 @@
 
 #include <map>
 #include <list>
-#include <libxml++/libxml++.h>
 
 #include "socket.hpp"
 #include "stanza.hpp"
-
-class JabberElementNode;
-
-class JabberNode {
-public:
-  JabberElementNode *m_parent;
-protected:
-  JabberNode(JabberElementNode *parent);
-  virtual ~JabberNode();
-};
-
-typedef std::list<JabberNode *> jabberNodeList_t;
-
-class JabberElementNode : public JabberNode {
-public:
-  const Glib::ustring m_name;
-  const xmlpp::SaxParser::AttributeList m_attributes;
-  jabberNodeList_t m_children;
-  JabberElementNode(JabberElementNode *parent, const Glib::ustring &name, const xmlpp::SaxParser::AttributeList &attributes);
-  virtual ~JabberElementNode();
-};
-
-
-class JabberTextNode : public JabberNode {
-public:
-  const Glib::ustring m_data;
-  JabberTextNode(JabberElementNode *parent, const Glib::ustring nodeData);
-  virtual ~JabberTextNode();
-};
-
-
-class JabberCommentNode : public JabberNode {
-public:
-  const Glib::ustring m_data;
-  JabberCommentNode(JabberElementNode *parent, const Glib::ustring nodeData);
-  virtual ~JabberCommentNode();
-};
-
+#include "jabbernode.hpp"
 
 class JabberSession;
 

@@ -15,6 +15,7 @@ public:
   virtual ~JabberIqRegister(void);
 
   virtual const std::string *render(const std::string *id) const;
+  static Stanza *parse(const JabberElementNode *query, const JabberElementNode *error);
 };
 
 #endif // !defined(_JABBER_IQ_REGISTER_HPP_INCLUDED_)
