@@ -7,15 +7,15 @@ class JabberIqRegister : public IqStanza {
 private:
   std::string *m_username;
   std::string *m_password;
-  std::string *m_resource;
+  std::string *m_email;
   // const std::string *render(const std::string &id, const std::string &body) const;
 
 public:
-  JabberIqRegister(const std::string &username, const std::string &password, const std::string &resource);
+  JabberIqRegister(const std::string &username, const std::string &password, const std::string &email);
   virtual ~JabberIqRegister(void);
 
   virtual const std::string *render(const std::string *id) const;
-  static Stanza *parse(const JabberElementNode *query, const JabberElementNode *error);
+  static Stanza *parse(const JabberElementNode *query);
 };
 
 #endif // !defined(_JABBER_IQ_REGISTER_HPP_INCLUDED_)

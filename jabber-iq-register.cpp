@@ -2,15 +2,15 @@
 
 #include "jabber-iq-register.hpp"
 
-JabberIqRegister::JabberIqRegister(const std::string &username, const std::string &password, const std::string &resource) {
+JabberIqRegister::JabberIqRegister(const std::string &username, const std::string &password, const std::string &email) {
   Type("set");
   m_username = new std::string(username);
   m_password = new std::string(password);
-  if ("" != resource) {
-    m_resource = new std::string(resource);
+  if ("" != email) {
+    m_email = new std::string(email);
   }
   else {
-    m_resource = NULL;
+    m_email = NULL;
   }
 }
 
@@ -18,7 +18,7 @@ JabberIqRegister::JabberIqRegister(const std::string &username, const std::strin
 JabberIqRegister::~JabberIqRegister(void) {
   delete m_username;
   delete m_password;
-  delete m_resource;
+  delete m_email;
 }
 
 
@@ -27,18 +27,18 @@ const std::string *JabberIqRegister::render(const std::string *id) const {
 
   body << "<username>" << *m_username << "</username>";
   body << "<password>" << *m_password << "</password>";
-  if (NULL != m_resource) {
-    body << "<resource>" << *m_resource << "</resource>";
+  if (NULL != m_email) {
+    body << "<email>" << *m_email << "</email>";
   }
   return renderIqStanza(id, "jabber:iq:register", body.str());
 }
 
 
-Stanza *JabberIqRegister::parse(const JabberElementNode *query, const JabberElementNode *error) {
+Stanza *JabberIqRegister::parse(const JabberElementNode *query) {
   Stanza *result = NULL;
   const std::string *username = NULL;
   const std::string *password = NULL;
-  const std::string *resource = NULL;
+  const std::string *email = NULL;
 
   for (jabberNodeList_t::const_iterator i=query->m_children.begin(); i != query->m_children.end(); ++i) {
     const JabberElementNode *node = dynamic_cast<JabberElementNode *>(*i);
@@ -57,22 +57,20 @@ Stanza *JabberIqRegister::parse(const JabberElementNode *query, const JabberElem
 	  password = new std::string(text->m_data);
 	}
       }
-      if ("resource" == node->m_name) {
+      if ("email" == node->m_name) {
 	jabberNodeList_t::const_iterator j=node->m_children.begin();
 	const JabberTextNode *text = dynamic_cast<JabberTextNode *>(*j);
 	if (NULL != text) {
-	  resource = new std::string(text->m_data);
+	  email = new std::string(text->m_data);
 	}
       }
     }
   }
-  if ((NULL != username) && (NULL != password) && (NULL != resource)) {
-    result = new JabberIqRegister(*username, *password, *resource);
-    // SYZYGY -- I may do other things here, like record the error
+  if ((NULL != username) && (NULL != password) && (NULL != email)) {
+    result = new JabberIqRegister(*username, *password, *email);
   }
   else {
     // TODO -- decide how, if at all, I handle this error
-    // 409 means "Username Not Available"
   }
   return result;
 }

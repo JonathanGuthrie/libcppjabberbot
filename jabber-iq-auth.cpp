@@ -35,7 +35,7 @@ const std::string *JabberIqAuth::render(const std::string *id) const {
 }
 
 
-Stanza *JabberIqAuth::parse(const JabberElementNode *query, const JabberElementNode *error) {
+Stanza *JabberIqAuth::parse(const JabberElementNode *query) {
   Stanza *result = NULL;
   const std::string *username = NULL;
   const std::string *password = NULL;
@@ -69,11 +69,9 @@ Stanza *JabberIqAuth::parse(const JabberElementNode *query, const JabberElementN
   }
   if ((NULL != username) && (NULL != password) && (NULL != resource)) {
     result = new JabberIqAuth(*username, *password, *resource);
-    // SYZYGY -- I may do other things here, like record the error
   }
   else {
     // TODO -- decide how, if at all, I handle this error
-    // 401 means invalid username or password
   }
   return result;
 }

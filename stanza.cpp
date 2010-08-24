@@ -9,6 +9,8 @@ Stanza::Stanza(void) {
   m_type = NULL;
   m_id = NULL;
   m_namespace = NULL;
+  m_errorMessage = new std::string("");
+  m_error = 200;
 }
 
 Stanza::~Stanza(void) {
@@ -17,6 +19,7 @@ Stanza::~Stanza(void) {
   delete m_type;
   delete m_id;
   delete m_namespace;
+  delete m_errorMessage;
 }
 
 
@@ -50,6 +53,17 @@ void Stanza::Namespace(const std::string &name_space) {
 }
 
 
+void Stanza::ErrorMessage(const std::string &errorMessage) {
+  delete m_errorMessage;
+  m_errorMessage = new std::string(errorMessage);
+}
+
+
+void Stanza::Error(int error) {
+  m_error = error;
+}
+
+
 const std::string &Stanza::To(void) const {
   return *m_to;
 }
@@ -72,6 +86,16 @@ const std::string &Stanza::Id(void) const  {
 
 const std::string &Stanza::Namespace(void) const  {
   return *m_namespace;
+}
+
+
+const std::string &Stanza::ErrorMessage(void) const {
+  return *m_errorMessage;
+}
+
+
+int Stanza::Error(void) const {
+  return m_error;
 }
 
 

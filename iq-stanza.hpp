@@ -3,7 +3,7 @@
 
 #include "stanza.hpp"
 
-typedef Stanza *(*stanzaParser)(const JabberElementNode *query, const JabberElementNode *error);
+typedef Stanza *(*stanzaParser)(const JabberElementNode *query);
 typedef std::map<std::string, stanzaParser> parseMap_t;
 
 class IqStanza : public Stanza {

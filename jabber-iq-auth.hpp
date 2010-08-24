@@ -15,7 +15,7 @@ public:
   virtual ~JabberIqAuth(void);
 
   virtual const std::string *render(const std::string *id) const;
-  static Stanza *parse(const JabberElementNode *query, const JabberElementNode *error);
+  static Stanza *parse(const JabberElementNode *query);
 };
 
 #endif // !defined(_JABBER_IQ_AUTH_HPP_INCLUDED_)

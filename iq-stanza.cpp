@@ -1,5 +1,6 @@
 #include <sstream>
 #include <iostream>
+#include <cstdlib>
 
 #include "iq-stanza.hpp"
 #include "jabber-iq-auth.hpp"
@@ -34,12 +35,14 @@ const std::string *IqStanza::render(const std::string *id) const {
 Stanza *IqStanza::parse(const JabberElementNode *root) {
   // If there are no children, then it's an iq stanza
   Stanza *result;
+  std::string errorMessage;
+  int error = 0;
+
   if (0 == root->m_children.size()) {
     result = new IqStanza();
   }
   else {
     const JabberElementNode *query_node = NULL;
-    const JabberElementNode *error_node = NULL;
     const std::string *name_space = NULL;
     for (jabberNodeList_t::const_iterator i=root->m_children.begin(); i != root->m_children.end(); ++i) {
       const JabberElementNode *node = dynamic_cast<JabberElementNode *>(*i);
@@ -52,13 +55,23 @@ Stanza *IqStanza::parse(const JabberElementNode *root) {
 	}
       }
       if ((NULL != node) && ("error" == node->m_name)) {
-	error_node = node;
+	jabberNodeList_t::const_iterator j=node->m_children.begin();
+	const JabberTextNode *text = dynamic_cast<JabberTextNode *>(*j);
+	if (NULL != text) {
+	  errorMessage = text->m_data;
+	}
+	
+	for(xmlpp::SaxParser::AttributeList::const_iterator k = node->m_attributes.begin(); k != node->m_attributes.end(); ++k) {
+	  if ("code" == k->name) {
+	    error = strtod(k->value.c_str(), NULL);
+	  }
+	}
       }
     }
     if (NULL != name_space) {
       parseMap_t::iterator parser = m_namespaceParsers->find(*name_space);
       if (parser != m_namespaceParsers->end()) {
-	result = (*parser->second)(query_node, error_node);
+	result = (*parser->second)(query_node);
       }
       else {
 	std::cout << "I don't recognize the name space " << *name_space << std::endl;
@@ -69,6 +82,10 @@ Stanza *IqStanza::parse(const JabberElementNode *root) {
     }
   }
   if (NULL != result) {
+    if ("" != errorMessage) {
+      result->ErrorMessage(errorMessage);
+      result->Error(error);
+    }
     for(xmlpp::SaxParser::AttributeList::const_iterator i = root->m_attributes.begin(); i != root->m_attributes.end(); ++i) {
       if ("type" == i->name) {
 	result->Type(i->value);
