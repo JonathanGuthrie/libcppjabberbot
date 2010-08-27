@@ -111,16 +111,18 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
     bool isResponse = false;
 
     Stanza *message = Stanza::parse(m_node);
+    m_node = NULL;
     isResponse = ("result" == *message->Type()) || ("error" == *message->Type());
 
-    if (isResponse && (NULL != message->Id())) {
-      jabberEventMap_t::iterator i = m_jabberEvents.find(*message->Id());
-      if (m_jabberEvents.end() != i) {
-	i->second->s = message;
-	pthread_mutex_unlock(&i->second->c);
-	m_jabberEvents.erase(i);
+    if (isResponse) {
+      if (NULL != message->Id()) {
+	jabberEventMap_t::iterator i = m_jabberEvents.find(*message->Id());
+	if (m_jabberEvents.end() != i) {
+	  i->second->s = message;
+	  pthread_mutex_unlock(&i->second->c);
+	  m_jabberEvents.erase(i);
+	}
       }
-      m_node = NULL;
     }
     else {
       // SYZYGY -- dispatch the message to the handler, if any
