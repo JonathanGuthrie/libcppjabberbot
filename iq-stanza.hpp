@@ -19,7 +19,7 @@ public:
   static Stanza *parse(const JabberElementNode *root);
 
 protected:
-  const std::string *renderIqStanza(const std::string *id, const std::string &name_space, const std::string &body) const;
+  const std::string *renderIqStanza(const std::string *id, const std::string *name_space, const std::string &body) const;
 };
 
 #endif // !defined(_IQ_STANZA_HPP_INCLUDED_)

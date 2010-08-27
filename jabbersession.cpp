@@ -111,10 +111,10 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
     bool isResponse = false;
 
     Stanza *message = Stanza::parse(m_node);
-    isResponse = ("result" == message->Type()) || ("error" == message->Type());
+    isResponse = ("result" == *message->Type()) || ("error" == *message->Type());
 
-    if (isResponse) {
-      jabberEventMap_t::iterator i = m_jabberEvents.find(message->Id());
+    if (isResponse && (NULL != message->Id())) {
+      jabberEventMap_t::iterator i = m_jabberEvents.find(*message->Id());
       if (m_jabberEvents.end() != i) {
 	i->second->s = message;
 	pthread_mutex_unlock(&i->second->c);
@@ -124,6 +124,12 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
     }
     else {
       // SYZYGY -- dispatch the message to the handler, if any
+      if (NULL != message->Namespace()) {
+	handlerMap_t::iterator i = m_handlers.find(*message->Namespace());
+	if (m_handlers.end() != i) {
+	  m_handlers[*message->Namespace()](*message, this);
+	}
+      }
     }
   }
   pthread_mutex_unlock(&m_stateMutex);
@@ -240,4 +246,5 @@ const Stanza *JabberSession::SendMessage(const Stanza &request,  bool expectingR
 
 
 void JabberSession::Register(handler_t handler, const std::string &name_space) {
+  m_handlers[name_space] = handler;
 }

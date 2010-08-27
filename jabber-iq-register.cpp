@@ -3,6 +3,7 @@
 #include "jabber-iq-register.hpp"
 
 JabberIqRegister::JabberIqRegister(const std::string &username, const std::string &password, const std::string &email) {
+  Namespace("jabber:iq:register");
   Type("set");
   m_username = new std::string(username);
   m_password = new std::string(password);
@@ -30,7 +31,7 @@ const std::string *JabberIqRegister::render(const std::string *id) const {
   if (NULL != m_email) {
     body << "<email>" << *m_email << "</email>";
   }
-  return renderIqStanza(id, "jabber:iq:register", body.str());
+  return renderIqStanza(id, Namespace(), body.str());
 }
 
 

@@ -5,6 +5,7 @@
 #include "iq-stanza.hpp"
 #include "jabber-iq-auth.hpp"
 #include "jabber-iq-register.hpp"
+#include "jabber-iq-roster.hpp"
 
 parseMap_t *IqStanza::m_namespaceParsers = NULL;
 
@@ -14,18 +15,20 @@ IqStanza::IqStanza(void) {
     
     m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:auth", JabberIqAuth::parse));
     m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:register", JabberIqRegister::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:roster", JabberIqRoster::parse));
   }
 }
 
 
 IqStanza::~IqStanza(void) {}
 
-const std::string *IqStanza::renderIqStanza(const std::string *id, const std::string &name_space, const std::string &body) const {
+const std::string *IqStanza::renderIqStanza(const std::string *id, const std::string *name_space, const std::string &body) const {
   std::ostringstream query;
 
-  query << "<query xmlns='" << name_space << "'>" << body << "</query>";
+  query << "<query xmlns='" << *name_space << "'>" << body << "</query>";
   return renderStanza(id, "iq", query.str());
 }
+
 
 const std::string *IqStanza::render(const std::string *id) const {
   return renderStanza(id, "iq", "");

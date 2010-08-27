@@ -11,11 +11,11 @@
 class JabberSession;
 
 typedef void (*handler_t)(const Stanza &request, class JabberSession *session);
+typedef std::map<std::string, handler_t> handlerMap_t;
 
 class JabberSession : public xmlpp::SaxParser {
 private:
   typedef enum { Connected, GotStreamTag, Closing, Closed, Error } jabberSessionState_t; 
-  // typedef struct {JabberElementNode *n; pthread_mutex_t c;} jabberEvent_t;
   typedef struct {Stanza *s; pthread_mutex_t c;} jabberEvent_t;
   typedef std::map<Glib::ustring, jabberEvent_t *> jabberEventMap_t;
 
@@ -40,6 +40,7 @@ private:
   jabberEventMap_t m_jabberEvents;
   unsigned long m_idCount;
   JabberElementNode *m_node;
+  handlerMap_t m_handlers;
 
 public:
   JabberSession(const std::string &host, unsigned short port, bool isSecure);

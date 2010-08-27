@@ -27,12 +27,12 @@ public:
   void ErrorMessage(const std::string &errorMessage);
   void Error(int error);
 
-  const std::string &To(void) const;
-  const std::string &From(void) const;
-  const std::string &Type(void) const;
-  const std::string &Id(void) const;
-  const std::string &Namespace(void) const;
-  const std::string &ErrorMessage(void) const;
+  const std::string *To(void) const;
+  const std::string *From(void) const;
+  const std::string *Type(void) const;
+  const std::string *Id(void) const;
+  const std::string *Namespace(void) const;
+  const std::string *ErrorMessage(void) const;
   // 200 is success
   // 401 means invalid username or password
   // 409 means "Username Not Available"

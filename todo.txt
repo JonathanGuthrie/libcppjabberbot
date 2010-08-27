@@ -1,7 +1,10 @@
 done) define stanza base class
 
-2) build client class with ability to transmit certain defined stanzas
+done) build client class with ability to transmit certain defined stanzas
 
-3) build client class with ability with ability to understand and dispatch
+done) build client class with ability with ability to understand and dispatch
   a couple of different select stanzas (login and register)
 
+done)  Add a callback framework for non-response stanzas received
+
+5)  Add the other stanzas needed to implement the affirmation bot

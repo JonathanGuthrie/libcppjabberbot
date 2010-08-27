@@ -64,33 +64,33 @@ void Stanza::Error(int error) {
 }
 
 
-const std::string &Stanza::To(void) const {
-  return *m_to;
+const std::string *Stanza::To(void) const {
+  return m_to;
 }
 
 
-const std::string &Stanza::From(void) const {
-  return *m_from;
+const std::string *Stanza::From(void) const {
+  return m_from;
 }
 
 
-const std::string &Stanza::Type(void) const {
-  return *m_type;
+const std::string *Stanza::Type(void) const {
+  return m_type;
 }
 
 
-const std::string &Stanza::Id(void) const  {
-  return *m_id;
+const std::string *Stanza::Id(void) const  {
+  return m_id;
 }
 
 
-const std::string &Stanza::Namespace(void) const  {
-  return *m_namespace;
+const std::string *Stanza::Namespace(void) const  {
+  return m_namespace;
 }
 
 
-const std::string &Stanza::ErrorMessage(void) const {
-  return *m_errorMessage;
+const std::string *Stanza::ErrorMessage(void) const {
+  return m_errorMessage;
 }
 
 

@@ -2,7 +2,8 @@ CC=g++
 CXXFLAGS=-Wall -g `pkg-config libxml++-2.6 --cflags`
 LDFLAGS=-lssl -lexpat `pkg-config libxml++-2.6 --libs`
 
-test: test.o stanza.o jabbernode.o jabbersession.o socket.o iq-stanza.o jabber-iq-auth.o jabber-iq-register.o
+test: test.o stanza.o jabbernode.o jabbersession.o socket.o iq-stanza.o jabber-iq-auth.o jabber-iq-register.o \
+	jabber-iq-roster.o
 
 %.d: %.cpp
 	@set -e; rm -f $@; \
@@ -17,10 +18,11 @@ SOURCES=stanza.cpp \
 	iq-stanza.cpp \
 	jabber-iq-auth.cpp \
 	jabber-iq-register.cpp \
+	jabber-iq-roster.cpp \
 	test.cpp
 
 include $(SOURCES:.cpp=.d)
 
 clean:
-	rm -f *.o *.d
+	rm -f *.o *.d test
 
