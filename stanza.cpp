@@ -2,6 +2,7 @@
 
 #include "stanza.hpp"
 #include "iq-stanza.hpp"
+#include "presence-stanza.hpp"
 
 Stanza::Stanza(void) {
   m_to = NULL;
@@ -9,7 +10,7 @@ Stanza::Stanza(void) {
   m_type = NULL;
   m_id = NULL;
   m_namespace = NULL;
-  m_errorMessage = new std::string("");
+  m_errorMessage = NULL;
   m_error = 200;
 }
 
@@ -23,39 +24,69 @@ Stanza::~Stanza(void) {
 }
 
 
-void Stanza::To(const std::string &to) {
+void Stanza::To(const std::string *to) {
   delete m_to;
-  m_to = new std::string(to);
+  m_to = to;
+}
+
+
+void Stanza::To(const std::string &to) {
+  To(new std::string(to));
+}
+
+
+void Stanza::From(const std::string *from) {
+  delete m_from;
+  m_from = from;
 }
 
 
 void Stanza::From(const std::string &from) {
-  delete m_from;
-  m_from = new std::string(from);
+  From(new std::string(from));
+}
+
+
+void Stanza::Type(const std::string *type) {
+  delete m_type;
+  m_type = type;
 }
 
 
 void Stanza::Type(const std::string &type) {
-  delete m_type;
-  m_type = new std::string(type);
+  Type(new std::string(type));
+}
+
+
+void Stanza::Id(const std::string *id) {
+  delete m_id;
+  m_id = id;
 }
 
 
 void Stanza::Id(const std::string &id) {
-  delete m_id;
-  m_id = new std::string(id);
+  Id(new std::string(id));
+}
+
+
+void Stanza::Namespace(const std::string *name_space) {
+  delete m_namespace;
+  m_namespace = name_space;
 }
 
 
 void Stanza::Namespace(const std::string &name_space) {
-  delete m_namespace;
-  m_namespace = new std::string(name_space);
+  Namespace(new std::string(name_space));
+}
+
+
+void Stanza::ErrorMessage(const std::string *errorMessage) {
+  delete m_errorMessage;
+  m_errorMessage = errorMessage;
 }
 
 
 void Stanza::ErrorMessage(const std::string &errorMessage) {
-  delete m_errorMessage;
-  m_errorMessage = new std::string(errorMessage);
+  ErrorMessage(new std::string(errorMessage));
 }
 
 
@@ -129,6 +160,9 @@ Stanza *Stanza::parse(const JabberElementNode *root) {
 
   if ("iq" == root->m_name) {
     result = IqStanza::parse(root);
+  }
+  if ("presence" == root->m_name) {
+    result = PresenceStanza::parse(root);
   }
   return result;
 }

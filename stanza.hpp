@@ -7,23 +7,29 @@
 
 class Stanza {
 private:
-  std::string *m_to;
-  std::string *m_from;
-  std::string *m_type;
-  std::string *m_id;
-  std::string *m_namespace;
-  std::string *m_errorMessage;
+  const std::string *m_to;
+  const std::string *m_from;
+  const std::string *m_type;
+  const std::string *m_id;
+  const std::string *m_namespace;
+  const std::string *m_errorMessage;
   int m_error;
 
 public:
   Stanza(void);
   virtual ~Stanza(void);
 
+  void To(const std::string *to);
   void To(const std::string &to);
+  void From(const std::string *from);
   void From(const std::string &from);
+  void Type(const std::string *type);
   void Type(const std::string &type);
+  void Id(const std::string *id);
   void Id(const std::string &id);
+  void Namespace(const std::string *name_space);
   void Namespace(const std::string &name_space);
+  void ErrorMessage(const std::string *errorMessage);
   void ErrorMessage(const std::string &errorMessage);
   void Error(int error);
 

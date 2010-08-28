@@ -4,6 +4,7 @@
 #include "jabber-iq-auth.hpp"
 #include "jabber-iq-register.hpp"
 #include "jabber-iq-roster.hpp"
+#include "presence-stanza.hpp"
 
 void presence_notification(const Stanza &request, class JabberSession *session)  {
   std::cout << "It got into the presence_notification handler" << std::endl;
@@ -39,7 +40,21 @@ int main(void) {
 
   delete response;
 
-  sleep(1);
+  PresenceStanza presenceNotification;
+  presenceNotification.Type(PresenceStanza::Available);
+  presenceNotification.Show("I am Here");
+  presenceNotification.Status("normal");
+  presenceNotification.Priority(255);
+  session.SendMessage(presenceNotification, false);
+
+  presenceNotification.Type(PresenceStanza::Subscribe);
+  presenceNotification.Show(NULL);
+  presenceNotification.Status(NULL);
+  presenceNotification.Priority(-1);
+  presenceNotification.To("cybersmythe@jabber.brokersys.com");
+  session.SendMessage(presenceNotification, false);
+
+  sleep(100);
 
   return 0;
 }

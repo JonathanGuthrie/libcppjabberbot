@@ -7,4 +7,6 @@ done) build client class with ability with ability to understand and dispatch
 
 done)  Add a callback framework for non-response stanzas received
 
-5)  Add the other stanzas needed to implement the affirmation bot
+5)  Extend the callback framework to allow callbacks for stanzas that don't have namespaces
+
+6)  Add the other stanzas needed to implement the affirmation bot

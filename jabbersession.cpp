@@ -112,7 +112,7 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
 
     Stanza *message = Stanza::parse(m_node);
     m_node = NULL;
-    isResponse = ("result" == *message->Type()) || ("error" == *message->Type());
+    isResponse = (NULL != message->Type()) && (("result" == *message->Type()) || ("error" == *message->Type()));
 
     if (isResponse) {
       if (NULL != message->Id()) {
