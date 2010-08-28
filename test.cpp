@@ -6,14 +6,40 @@
 #include "jabber-iq-roster.hpp"
 #include "presence-stanza.hpp"
 
-void presence_notification(const Stanza &request, class JabberSession *session)  {
+
+int presence_notification(const PresenceStanza &request, class JabberSession *session) {
   std::cout << "It got into the presence_notification handler" << std::endl;
+  if (PresenceStanza::Subscribe == request.Type()) {
+    PresenceStanza response;
+    response.Type(PresenceStanza::Subscribed);
+    response.To(request.From());
+    session->SendMessage(response, false);
+
+    response.Type(PresenceStanza::Subscribe);
+    session->SendMessage(response, false);
+  }
+  if (PresenceStanza::Unsubscribe == request.Type()) {
+    PresenceStanza response;
+    response.Type(PresenceStanza::Unsubscribed);
+    response.To(request.From());
+    session->SendMessage(response, false);
+
+    response.Type(PresenceStanza::Unsubscribe);
+    session->SendMessage(response, false);
+  }
+  return 0;
+}
+
+int roster_notification(const IqStanza &request, class JabberSession *session)  {
+  std::cout << "It got into the roster_notification handler" << std::endl;
+  return 0;
 }
 
 int main(void) {
   JabberSession session("jabber.brokersys.com", 5222, false);
 
-  session.Register(presence_notification, "jabber:iq:roster");
+  session.Register(presence_notification);
+  session.Register(roster_notification, "jabber:iq:roster");
   JabberIqAuth login_stanza("jabber-bot", "zu2ooHah", "TestBot");
   const Stanza *response= session.SendMessage(login_stanza, true);
   // std::cout << "The first login response is " << *(response->render(NULL)) << std::endl;
@@ -40,21 +66,19 @@ int main(void) {
 
   delete response;
 
+  sleep(1);
   PresenceStanza presenceNotification;
   presenceNotification.Type(PresenceStanza::Available);
-  presenceNotification.Show("I am Here");
-  presenceNotification.Status("normal");
-  presenceNotification.Priority(255);
-  session.SendMessage(presenceNotification, false);
-
-  presenceNotification.Type(PresenceStanza::Subscribe);
-  presenceNotification.Show(NULL);
   presenceNotification.Status(NULL);
   presenceNotification.Priority(-1);
-  presenceNotification.To("cybersmythe@jabber.brokersys.com");
   session.SendMessage(presenceNotification, false);
 
-  sleep(100);
+  sleep(20);
+
+  presenceNotification.Type(PresenceStanza::Unavailable);
+  presenceNotification.Status(NULL);
+  presenceNotification.Priority(-1);
+  session.SendMessage(presenceNotification, false);
 
   return 0;
 }

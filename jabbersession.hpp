@@ -9,9 +9,14 @@
 #include "jabbernode.hpp"
 
 class JabberSession;
+class MessageStanza;
+class PresenceStanza;
+class IqStanza;
 
-typedef void (*handler_t)(const Stanza &request, class JabberSession *session);
-typedef std::map<std::string, handler_t> handlerMap_t;
+typedef int (*messageHandler_t)(const MessageStanza &request, class JabberSession *session);
+typedef int (*presenceHandler_t)(const PresenceStanza &request, class JabberSession *session);
+typedef int (*iqHandler_t)(const IqStanza &request, class JabberSession *session);
+typedef std::map<std::string, iqHandler_t> iqHandlerMap_t;
 
 class JabberSession : public xmlpp::SaxParser {
 private:
@@ -40,14 +45,18 @@ private:
   jabberEventMap_t m_jabberEvents;
   unsigned long m_idCount;
   JabberElementNode *m_node;
-  handlerMap_t m_handlers;
+  iqHandlerMap_t m_iqHandlers;
+  presenceHandler_t m_presenceHandler;
 
 public:
   JabberSession(const std::string &host, unsigned short port, bool isSecure);
   virtual ~JabberSession(void);
 
   const Stanza *SendMessage(const Stanza &request, bool expectingReply);
-  void Register(handler_t handler, const std::string &name_space);
+  void Register(iqHandler_t handler, const std::string &name_space);
+  // Unregister(iqHandler_t, const std::string &name_space);
+  void Register(presenceHandler_t handler);
+  // Unregister(presenceHandler_t handler);
 };
 
 

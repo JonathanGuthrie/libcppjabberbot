@@ -4,6 +4,8 @@
 #include <iomanip>
 
 #include "jabbersession.hpp"
+#include "iq-stanza.hpp"
+#include "presence-stanza.hpp"
 
 #define BUFFERLENGTH 2000
 
@@ -13,6 +15,7 @@ JabberSession::JabberSession(const std::string &host, unsigned short port, bool 
   m_idCount = 0;
   pthread_mutex_init(&m_stateMutex, NULL);
   m_node = NULL;
+  m_presenceHandler = NULL;
 
   if (0 == pthread_create(&m_listenerThread, NULL, ListenerThreadFunction, this)) {
     // SYZYGY -- RFC 3920 specifies an "xml:lang" attribute and a "version" attribute
@@ -125,11 +128,19 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
       }
     }
     else {
-      // SYZYGY -- dispatch the message to the handler, if any
-      if (NULL != message->Namespace()) {
-	handlerMap_t::iterator i = m_handlers.find(*message->Namespace());
-	if (m_handlers.end() != i) {
-	  m_handlers[*message->Namespace()](*message, this);
+      const IqStanza *iqMessage = dynamic_cast<IqStanza *>(message);
+      const PresenceStanza *presenceMessage = dynamic_cast<PresenceStanza *>(message);
+      if (NULL != iqMessage) {
+	if (NULL != message->Namespace()) {
+	  iqHandlerMap_t::iterator i = m_iqHandlers.find(*iqMessage->Namespace());
+	  if (m_iqHandlers.end() != i) {
+	    m_iqHandlers[*iqMessage->Namespace()](*iqMessage, this);
+	  }
+	}
+      }
+      if (NULL != presenceMessage) {
+	if (NULL != m_presenceHandler) {
+	  (*m_presenceHandler)(*presenceMessage, this);
 	}
       }
     }
@@ -247,6 +258,19 @@ const Stanza *JabberSession::SendMessage(const Stanza &request,  bool expectingR
 }
 
 
-void JabberSession::Register(handler_t handler, const std::string &name_space) {
-  m_handlers[name_space] = handler;
+void JabberSession::Register(iqHandler_t iqHandler, const std::string &name_space) {
+  if (NULL != iqHandler) {
+    m_iqHandlers[name_space] = iqHandler;
+  }
+  else {
+    iqHandlerMap_t::iterator i = m_iqHandlers.find(name_space);
+    if (m_iqHandlers.end() != i) {
+      m_iqHandlers.erase(i);
+    }
+  }
+}
+
+
+void JabberSession::Register(presenceHandler_t presenceHandler) {
+  m_presenceHandler = presenceHandler;
 }

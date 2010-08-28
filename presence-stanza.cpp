@@ -4,16 +4,38 @@
 
 #include "presence-stanza.hpp"
 
+typedef std::map<std::string, PresenceStanza::PresenceTypes> typeMap_t;
+typedef std::map<std::string, PresenceStanza::ShowTypes> showMap_t;
+static typeMap_t *typeMap = NULL;
+static showMap_t *showMap = NULL;
+
 PresenceStanza::PresenceStanza(void) {
   m_type = Available;
-  m_show = NULL;
+  m_show = Normal;
   m_status = NULL;
   m_priority = -1;
+  if (NULL == typeMap) {
+    typeMap = new typeMap_t;
+    (*typeMap)["available"]    = Available;
+    (*typeMap)["unvailable"]   = Unavailable;
+    (*typeMap)["probe"]        = Probe;
+    (*typeMap)["subscribe"]    = Subscribe;
+    (*typeMap)["unsubscribe"]  = Unsubscribe;
+    (*typeMap)["subscribed"]   = Subscribed;
+    (*typeMap)["unsubscribed"] = Unsubscribed;
+  }
+  if (NULL == showMap) {
+    showMap = new showMap_t;
+    (*showMap)["normal"] = Normal;
+    (*showMap)["away"] = Away;
+    (*showMap)["chat"] = Chat;
+    (*showMap)["dnd"] = Dnd;
+    (*showMap)["xa"] = Xa;
+  }
 }
 
 
 PresenceStanza::~PresenceStanza(void) {
-  delete m_show;
   delete m_status;
 }
 
@@ -24,8 +46,26 @@ const std::string *PresenceStanza::render(const std::string *id) const {
   if (NULL != m_status) {
     announcement << "<status>" << *m_status << "</status>";
   }
-  if (NULL != m_show) {
-    announcement << "<show>" << *m_show << "</show>";
+  if (Normal != m_show) {
+    announcement << "<show>";
+    switch (m_show) {
+    case Away:
+      announcement << "away";
+      break;
+
+    case Chat:
+      announcement << "chat";
+      break;
+
+    case Dnd:
+      announcement << "dnd";
+      break;
+
+    default:
+      announcement << "xa";
+      break;
+    }
+    announcement << "</show>";
   }
   if (0 < m_priority) {
     announcement << "<priority>" << m_priority << "</priority>";
@@ -35,7 +75,27 @@ const std::string *PresenceStanza::render(const std::string *id) const {
 
 
 Stanza *PresenceStanza::parse(const JabberElementNode *root) {
-  return new PresenceStanza();
+  PresenceStanza *result = new PresenceStanza();
+
+  result->Type(Available);
+  for(xmlpp::SaxParser::AttributeList::const_iterator i = root->m_attributes.begin(); i != root->m_attributes.end(); ++i) {
+    if ("type" == i->name) {
+      typeMap_t::const_iterator j = typeMap->find(i->value);
+      if (j != typeMap->end()) {
+	result->Type((*typeMap)[i->value]);
+      }
+      else {
+	result->Type(UnknownType);
+      }
+    }
+    if ("id" == i->name) {
+      result->Id(i->value);
+    }
+    if ("from" == i->name) {
+      result->From(i->value);
+    }
+  }
+  return result;
 }
 
 
@@ -73,14 +133,8 @@ void PresenceStanza::Type(PresenceTypes type) {
 }
 
 
-void PresenceStanza::Show(const std::string *show) {
-  delete m_show;
+void PresenceStanza::Show(ShowTypes show) {
   m_show = show;
-}
-
-
-void PresenceStanza::Show(const std::string &show) {
-  Show(new std::string(show));
 }
 
 
@@ -105,7 +159,7 @@ PresenceStanza::PresenceTypes PresenceStanza::Type(void) const {
 }
 
 
-const std::string *PresenceStanza::Show(void) const {
+PresenceStanza::ShowTypes PresenceStanza::Show(void) const {
   return m_show;
 }
 
