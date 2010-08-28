@@ -47,6 +47,7 @@ private:
   JabberElementNode *m_node;
   iqHandlerMap_t m_iqHandlers;
   presenceHandler_t m_presenceHandler;
+  messageHandler_t m_messageHandler;
 
 public:
   JabberSession(const std::string &host, unsigned short port, bool isSecure);
@@ -54,9 +55,8 @@ public:
 
   const Stanza *SendMessage(const Stanza &request, bool expectingReply);
   void Register(iqHandler_t handler, const std::string &name_space);
-  // Unregister(iqHandler_t, const std::string &name_space);
   void Register(presenceHandler_t handler);
-  // Unregister(presenceHandler_t handler);
+  void Register(messageHandler_t handler);
 };
 
 

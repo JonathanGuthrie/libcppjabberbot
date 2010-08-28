@@ -6,6 +6,7 @@
 #include "jabbersession.hpp"
 #include "iq-stanza.hpp"
 #include "presence-stanza.hpp"
+#include "message-stanza.hpp"
 
 #define BUFFERLENGTH 2000
 
@@ -16,6 +17,7 @@ JabberSession::JabberSession(const std::string &host, unsigned short port, bool 
   pthread_mutex_init(&m_stateMutex, NULL);
   m_node = NULL;
   m_presenceHandler = NULL;
+  m_messageHandler = NULL;
 
   if (0 == pthread_create(&m_listenerThread, NULL, ListenerThreadFunction, this)) {
     // SYZYGY -- RFC 3920 specifies an "xml:lang" attribute and a "version" attribute
@@ -130,6 +132,7 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
     else {
       const IqStanza *iqMessage = dynamic_cast<IqStanza *>(message);
       const PresenceStanza *presenceMessage = dynamic_cast<PresenceStanza *>(message);
+      const MessageStanza *messageMessage = dynamic_cast<MessageStanza *>(message);
       if (NULL != iqMessage) {
 	if (NULL != message->Namespace()) {
 	  iqHandlerMap_t::iterator i = m_iqHandlers.find(*iqMessage->Namespace());
@@ -141,6 +144,11 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
       if (NULL != presenceMessage) {
 	if (NULL != m_presenceHandler) {
 	  (*m_presenceHandler)(*presenceMessage, this);
+	}
+      }
+      if (NULL != messageMessage) {
+	if (NULL != m_messageHandler) {
+	  (*m_messageHandler)(*messageMessage, this);
 	}
       }
     }
@@ -273,4 +281,9 @@ void JabberSession::Register(iqHandler_t iqHandler, const std::string &name_spac
 
 void JabberSession::Register(presenceHandler_t presenceHandler) {
   m_presenceHandler = presenceHandler;
+}
+
+
+void JabberSession::Register(messageHandler_t messageHandler) {
+  m_messageHandler = messageHandler;
 }
