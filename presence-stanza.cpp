@@ -95,6 +95,37 @@ Stanza *PresenceStanza::parse(const JabberElementNode *root) {
       result->From(i->value);
     }
   }
+  result->Show(Normal);
+  for (jabberNodeList_t::const_iterator i=root->m_children.begin(); i != root->m_children.end(); ++i) {
+    const JabberElementNode *node = dynamic_cast<JabberElementNode *>(*i);
+    if ((NULL != node) && ("show" == node->m_name)) {
+      jabberNodeList_t::const_iterator j=node->m_children.begin();
+      const JabberTextNode *text = dynamic_cast<JabberTextNode *>(*j);
+      if (NULL != text) {
+	typeMap_t::const_iterator j = typeMap->find(text->m_data);
+	if (j != typeMap->end()) {
+	  result->Show((*showMap)[text->m_data]);
+	}
+	else {
+	  result->Show(UnknownShow);
+	}
+      }
+    }
+    if ((NULL != node) && ("status" == node->m_name)) {
+      jabberNodeList_t::const_iterator j=node->m_children.begin();
+      const JabberTextNode *text = dynamic_cast<JabberTextNode *>(*j);
+      if (NULL != text) {
+	result->Status(text->m_data);
+      }
+    }
+    if ((NULL != node) && ("priority" == node->m_name)) {
+      jabberNodeList_t::const_iterator j=node->m_children.begin();
+      const JabberTextNode *text = dynamic_cast<JabberTextNode *>(*j);
+      if (NULL != text) {
+	result->Priority(strtol(text->m_data.c_str(), NULL, 10));
+      }
+    }
+  }
   return result;
 }
 

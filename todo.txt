@@ -9,5 +9,12 @@ done)  Add a callback framework for non-response stanzas received
 
 done)  Extend the callback framework to allow callbacks for stanzas that don't have namespaces
 
-6)  Add the other stanzas needed to implement the affirmation bot
+done)  Add the other stanzas needed to implement the affirmation bot
 
+7)  Add some mechanism for doing registration the way you're supposed to, by 
+doing a get on the registration to get the fields and then making sure they're
+all there.
+
+8)  Implement XMPP as well as (or instead of) Jabber
+
+9)  Other things that occur to me.
