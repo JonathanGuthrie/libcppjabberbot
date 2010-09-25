@@ -17,3 +17,36 @@ handler, passing it a pointer to that object.  That handler would be set up
 to expect a pointer to some stanza base class and registered to handle
 messages for one or more namespace types.
 
+=========================================
+These are the namespaces in a query tag inside an iq message:
+jabber:iq:agent (superseded by browse)
+jabber:iq:agents (superseded by browse)
+jabber:iq:auth (how does XMPP change this?)
+jabber:iq:autoupdate
+jabber:iq:browse
+jabber:iq:conference
+jabber:iq:gateway
+jabber:iq:last
+jabber:iq:oob
+jabber:iq:private
+jabber:iq:register
+jabber:iq:roster
+jabber:iq:search
+jabber:iq:time
+jabber:iq:version
+
+These are namespaces that can appear in x tags inside various message types:
+jabber:x:autoupdate
+jabber:x:conference
+jabber:x:delay
+jabber:x:encrypted
+jabber:x:envelope
+jabber:x:event
+jabber:x:expire
+jabber:x:oob
+jabber:x:roster
+jabber:x:signed
+
+Other namespaces:
+vcard-temp (vCard tag in iq message)
+http://www.w3.org/1999/xhtml (html tag in message message)
