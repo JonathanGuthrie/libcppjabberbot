@@ -113,16 +113,20 @@ Stanza *PresenceStanza::parse(const JabberElementNode *root) {
     }
     if ((NULL != node) && ("status" == node->m_name)) {
       jabberNodeList_t::const_iterator j=node->m_children.begin();
-      const JabberTextNode *text = dynamic_cast<JabberTextNode *>(*j);
-      if (NULL != text) {
-	result->Status(text->m_data);
+      if (node->m_children.end() != j) {
+	const JabberTextNode *text = dynamic_cast<JabberTextNode *>(*j);
+	if (NULL != text) {
+	  result->Status(text->m_data);
+	}
       }
     }
     if ((NULL != node) && ("priority" == node->m_name)) {
       jabberNodeList_t::const_iterator j=node->m_children.begin();
-      const JabberTextNode *text = dynamic_cast<JabberTextNode *>(*j);
-      if (NULL != text) {
-	result->Priority(strtol(text->m_data.c_str(), NULL, 10));
+      if (node->m_children.end() != j) {
+	const JabberTextNode *text = dynamic_cast<JabberTextNode *>(*j);
+	if (NULL != text) {
+	  result->Priority(strtol(text->m_data.c_str(), NULL, 10));
+	}
       }
     }
   }
