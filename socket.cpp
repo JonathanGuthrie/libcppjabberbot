@@ -6,7 +6,7 @@
 #include <string.h>
 #include <openssl/rand.h>
 #include <openssl/engine.h>
-#include <iostream>
+// #include <iostream>
 #include <sstream>
 
 
@@ -18,10 +18,10 @@ int cert_verify_callback(int ok, X509_STORE_CTX *store) {
 	int err = X509_STORE_CTX_get_error(store);
 
 	// SYZYGY -- this needs to get logged
-	std::cerr << "-Error with certificate at depth: " << depth << std::endl;
-	std::cerr << "  issuer = " << X509_NAME_oneline(X509_get_issuer_name(cert), data, 256) << std::endl;
-	std::cerr << "  subject = " << X509_NAME_oneline(X509_get_subject_name(cert), data, 256) << std::endl;
-	std::cerr << "  err " << err << ":" << X509_verify_cert_error_string(err) << std::endl;
+	// std::cerr << "-Error with certificate at depth: " << depth << std::endl;
+	// std::cerr << "  issuer = " << X509_NAME_oneline(X509_get_issuer_name(cert), data, 256) << std::endl;
+	// std::cerr << "  subject = " << X509_NAME_oneline(X509_get_subject_name(cert), data, 256) << std::endl;
+	// std::cerr << "  err " << err << ":" << X509_verify_cert_error_string(err) << std::endl;
     }
     return ok;
 }
@@ -149,7 +149,7 @@ void Socket::init(const std::string &destination, bool startEncrypted) throw(Soc
 	std::string server(SERVER);
 	if ((err = post_connection_check(ssl, server.c_str())) != X509_V_OK) {
 	  // SYZYGY -- log
-	  std::cerr << "-Error: peer certificate: " << X509_verify_cert_error_string(err) << std::endl;
+	  // std::cerr << "-Error: peer certificate: " << X509_verify_cert_error_string(err) << std::endl;
 	  throw SocketSSLErrorException(ERR_error_string(ERR_get_error(), NULL));
 	}
 
@@ -184,7 +184,7 @@ Socket::~Socket() {
 }
 
 ssize_t Socket::Send(const std::string &string) {
-  std::cout << "Sending: \"" << string << "\"" << std::endl;
+  // std::cout << "Sending: \"" << string << "\"" << std::endl;
   return Send((uint8_t *) string.c_str(), string.size());
 }
 

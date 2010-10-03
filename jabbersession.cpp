@@ -1,4 +1,4 @@
-#include <iostream>
+// #include <iostream>
 #include <unistd.h>
 #include <sstream>
 #include <iomanip>
@@ -51,7 +51,7 @@ JabberSession::~JabberSession(void) {
 
 void JabberSession::on_start_element(const Glib::ustring &name, const AttributeList &attributes) {
   pthread_mutex_lock(&m_stateMutex);
-  std::cout << "on_start_element(): " << name << std::endl;
+  // std::cout << "on_start_element(): " << name << std::endl;
 
   if (0 == m_depth) {
     if ((Connected == m_state) && ("stream:stream" == name)) {
@@ -60,19 +60,19 @@ void JabberSession::on_start_element(const Glib::ustring &name, const AttributeL
 
       for(xmlpp::SaxParser::AttributeList::const_iterator i = attributes.begin(); i != attributes.end(); ++i) {
 	if (i->name == "xmlns:stream") {
-	  std::cout << "   The stream namespace is \"" << i->value << "\"" << std::endl;
+	  // std::cout << "   The stream namespace is \"" << i->value << "\"" << std::endl;
 	}
 	if (i->name == "id") {
-	  std::cout << "   The session identifier is \"" << i->value << "\"" << std::endl;
+	  // std::cout << "   The session identifier is \"" << i->value << "\"" << std::endl;
 	  has_id = true;
 	  m_sessionIdentifier = i->value;
 	}
 	if (i->name == "xmlns") {
-	  std::cout << "   Declaring XML namespace \"" << i->value << "\"" << std::endl;
+	  // std::cout << "   Declaring XML namespace \"" << i->value << "\"" << std::endl;
 	}
 	if (i->name == "from") {
 	  has_from = true;
-	  std::cout << "   The logical server name is \"" << i->value << "\"" << std::endl;
+	  // std::cout << "   The logical server name is \"" << i->value << "\"" << std::endl;
 	  m_logicalServer = i->value;
 	}
       }
@@ -110,7 +110,7 @@ void JabberSession::on_start_element(const Glib::ustring &name, const AttributeL
 
 void JabberSession::on_end_element(const Glib::ustring &name) {
   pthread_mutex_lock(&m_stateMutex);
-  std::cout << "on_end_element(): " << name << std::endl;
+  // std::cout << "on_end_element(): " << name << std::endl;
   --m_depth;
   if (NULL != m_node->m_parent) {
     m_node = m_node->m_parent;
@@ -162,7 +162,7 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
 
 void JabberSession::on_characters(const Glib::ustring &characters) {
   pthread_mutex_lock(&m_stateMutex);
-  std::cout << "on_characters(): " << characters << std::endl;
+  // std::cout << "on_characters(): " << characters << std::endl;
   if (NULL != m_node) {
     JabberTextNode *node = new JabberTextNode(m_node, characters);
     m_node->m_children.push_back(node);
@@ -173,28 +173,28 @@ void JabberSession::on_characters(const Glib::ustring &characters) {
 
 void JabberSession::on_comment(const Glib::ustring &text) {
   pthread_mutex_lock(&m_stateMutex);
-  std::cout << "on_comment(): " << text << std::endl;
+  // std::cout << "on_comment(): " << text << std::endl;
   pthread_mutex_unlock(&m_stateMutex);
 }
 
 
 void JabberSession::on_warning(const Glib::ustring &text) {
   pthread_mutex_lock(&m_stateMutex);
-  std::cout << "on_warning(): " << text << std::endl;
+  // std::cout << "on_warning(): " << text << std::endl;
   pthread_mutex_unlock(&m_stateMutex);
 }
 
 
 void JabberSession::on_error(const Glib::ustring &text) {
   pthread_mutex_lock(&m_stateMutex);
-  std::cout << "on_error(): " << text << std::endl;
+  // std::cout << "on_error(): " << text << std::endl;
   pthread_mutex_unlock(&m_stateMutex);
 }
 
 
 void JabberSession::on_fatal_error(const Glib::ustring &text) {
   pthread_mutex_lock(&m_stateMutex);
-  std::cout << "on_fatal_error(): " << text << std::endl;
+  // std::cout << "on_fatal_error(): " << text << std::endl;
   pthread_mutex_unlock(&m_stateMutex);
 }
 
@@ -208,7 +208,7 @@ void *JabberSession::ListenerThreadFunction(void *data) {
     // Get the state mutex
     long l = t->m_s.Receive(buff, BUFFERLENGTH);
     buff[l] = '\0';
-    std::cout << "Received " << l << " chars \"" << buff << "\"" << std::endl;
+    // std::cout << "Received " << l << " chars \"" << buff << "\"" << std::endl;
     if (0 < l) {
       Glib::ustring input((char *)buff, l);
       t->parse_chunk(input);

@@ -1,5 +1,5 @@
 #include <sstream>
-#include <iostream>
+// #include <iostream>
 #include <cstdlib>
 
 #include "iq-stanza.hpp"
@@ -77,7 +77,7 @@ Stanza *IqStanza::parse(const JabberElementNode *root) {
 	result = (*parser->second)(query_node);
       }
       else {
-	std::cout << "I don't recognize the name space " << *name_space << std::endl;
+	// std::cout << "I don't recognize the name space " << *name_space << std::endl;
 	// SYZYGY -- log, I guess
 	// I don't know the name space.  Log, I guess, and return a plain stanza
 	result = new IqStanza();
