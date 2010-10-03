@@ -16,8 +16,11 @@ JabberSession::JabberSession(const std::string &host, unsigned short port, bool 
   m_idCount = 0;
   pthread_mutex_init(&m_stateMutex, NULL);
   m_node = NULL;
+  m_iqContext = NULL;
   m_presenceHandler = NULL;
+  m_presenceContext = NULL;
   m_messageHandler = NULL;
+  m_messageContext = NULL;
 
   if (0 == pthread_create(&m_listenerThread, NULL, ListenerThreadFunction, this)) {
     // SYZYGY -- RFC 3920 specifies an "xml:lang" attribute and a "version" attribute
@@ -137,18 +140,18 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
 	if (NULL != message->Namespace()) {
 	  iqHandlerMap_t::iterator i = m_iqHandlers.find(*iqMessage->Namespace());
 	  if (m_iqHandlers.end() != i) {
-	    m_iqHandlers[*iqMessage->Namespace()](*iqMessage, this);
+	    m_iqHandlers[*iqMessage->Namespace()](m_iqContext, *iqMessage, this);
 	  }
 	}
       }
       if (NULL != presenceMessage) {
 	if (NULL != m_presenceHandler) {
-	  (*m_presenceHandler)(*presenceMessage, this);
+	  (*m_presenceHandler)(m_presenceContext, *presenceMessage, this);
 	}
       }
       if (NULL != messageMessage) {
 	if (NULL != m_messageHandler) {
-	  (*m_messageHandler)(*messageMessage, this);
+	  (*m_messageHandler)(m_messageContext, *messageMessage, this);
 	}
       }
     }
@@ -266,7 +269,8 @@ const Stanza *JabberSession::SendMessage(const Stanza &request,  bool expectingR
 }
 
 
-void JabberSession::Register(iqHandler_t iqHandler, const std::string &name_space) {
+void JabberSession::Register(void *context, iqHandler_t iqHandler, const std::string &name_space) {
+  m_iqContext = context;
   if (NULL != iqHandler) {
     m_iqHandlers[name_space] = iqHandler;
   }
@@ -279,11 +283,13 @@ void JabberSession::Register(iqHandler_t iqHandler, const std::string &name_spac
 }
 
 
-void JabberSession::Register(presenceHandler_t presenceHandler) {
+void JabberSession::Register(void *context, presenceHandler_t presenceHandler) {
   m_presenceHandler = presenceHandler;
+  m_presenceContext = context;
 }
 
 
-void JabberSession::Register(messageHandler_t messageHandler) {
+void JabberSession::Register(void *context, messageHandler_t messageHandler) {
   m_messageHandler = messageHandler;
+  m_messageContext = context;
 }

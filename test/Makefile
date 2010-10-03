@@ -1,6 +1,6 @@
 CC=g++
-CXXFLAGS=-Wall -g -I.. `pkg-config libxml++-2.6 --cflags`
-LDFLAGS=-L.. -ljabber-bot
+CXXFLAGS=-Wall -g `pkg-config libxml++-2.6 --cflags`
+LDFLAGS=-L/usr/local/lib -ljabber-bot
 
 # Run test from this directory with a command like:
 #   LD_LIBRARY_PATH=.. ./test

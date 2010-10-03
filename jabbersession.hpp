@@ -13,9 +13,9 @@ class MessageStanza;
 class PresenceStanza;
 class IqStanza;
 
-typedef int (*messageHandler_t)(const MessageStanza &request, class JabberSession *session);
-typedef int (*presenceHandler_t)(const PresenceStanza &request, class JabberSession *session);
-typedef int (*iqHandler_t)(const IqStanza &request, class JabberSession *session);
+typedef int (*messageHandler_t)(void *context, const MessageStanza &request, class JabberSession *session);
+typedef int (*presenceHandler_t)(void *context, const PresenceStanza &request, class JabberSession *session);
+typedef int (*iqHandler_t)(void *context, const IqStanza &request, class JabberSession *session);
 typedef std::map<std::string, iqHandler_t> iqHandlerMap_t;
 
 class JabberSession : public xmlpp::SaxParser {
@@ -46,17 +46,20 @@ private:
   unsigned long m_idCount;
   JabberElementNode *m_node;
   iqHandlerMap_t m_iqHandlers;
+  void *m_iqContext;
   presenceHandler_t m_presenceHandler;
+  void *m_presenceContext;
   messageHandler_t m_messageHandler;
+  void *m_messageContext;
 
 public:
   JabberSession(const std::string &host, unsigned short port, bool isSecure);
   virtual ~JabberSession(void);
 
   const Stanza *SendMessage(const Stanza &request, bool expectingReply);
-  void Register(iqHandler_t handler, const std::string &name_space);
-  void Register(presenceHandler_t handler);
-  void Register(messageHandler_t handler);
+  void Register(void *context, iqHandler_t handler, const std::string &name_space);
+  void Register(void *context, presenceHandler_t handler);
+  void Register(void *context, messageHandler_t handler);
 };
 
 

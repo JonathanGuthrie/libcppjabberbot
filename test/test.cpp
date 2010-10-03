@@ -1,14 +1,9 @@
 #include <iostream>
 
-#include "jabbersession.hpp"
-#include "jabber-iq-auth.hpp"
-#include "jabber-iq-register.hpp"
-#include "jabber-iq-roster.hpp"
-#include "presence-stanza.hpp"
-#include "message-stanza.hpp"
+#include "jabber-bot/jabber-bot.hpp"
 
 
-int echomessages(const MessageStanza &request, class JabberSession *session) {
+int echomessages(void *context, const MessageStanza &request, class JabberSession *session) {
   std::cout << "Received a " << request.Type() << " message from " << *request.From() << std::endl;
   if (NULL != request.Body()) {
     std::cout << "With a body of " << *request.Body() << std::endl;
@@ -22,7 +17,7 @@ int echomessages(const MessageStanza &request, class JabberSession *session) {
 }
 
 
-int presence_notification(const PresenceStanza &request, class JabberSession *session) {
+int presence_notification(void *context, const PresenceStanza &request, class JabberSession *session) {
   std::cout << "It got into the presence_notification handler" << std::endl;
   if (PresenceStanza::Subscribe == request.Type()) {
     PresenceStanza response;
@@ -45,7 +40,7 @@ int presence_notification(const PresenceStanza &request, class JabberSession *se
   return 0;
 }
 
-int roster_notification(const IqStanza &request, class JabberSession *session)  {
+int roster_notification(void *context, const IqStanza &request, class JabberSession *session)  {
   std::cout << "It got into the roster_notification handler" << std::endl;
   return 0;
 }
@@ -53,9 +48,9 @@ int roster_notification(const IqStanza &request, class JabberSession *session)  
 int main(void) {
   JabberSession session("jabber.brokersys.com", 5222, false);
 
-  session.Register(presence_notification);
-  session.Register(echomessages);
-  session.Register(roster_notification, "jabber:iq:roster");
+  session.Register(NULL, presence_notification);
+  session.Register(NULL, echomessages);
+  session.Register(NULL, roster_notification, "jabber:iq:roster");
   JabberIqAuth login_stanza("jabber-bot", "zu2ooHah", "TestBot");
   const Stanza *response= session.SendMessage(login_stanza, true);
   // std::cout << "The first login response is " << *(response->render(NULL)) << std::endl;
