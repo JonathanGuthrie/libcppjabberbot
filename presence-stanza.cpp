@@ -17,7 +17,7 @@ PresenceStanza::PresenceStanza(void) {
   if (NULL == typeMap) {
     typeMap = new typeMap_t;
     (*typeMap)["available"]    = Available;
-    (*typeMap)["unvailable"]   = Unavailable;
+    (*typeMap)["unavailable"]  = Unavailable;
     (*typeMap)["probe"]        = Probe;
     (*typeMap)["subscribe"]    = Subscribe;
     (*typeMap)["unsubscribe"]  = Unsubscribe;
