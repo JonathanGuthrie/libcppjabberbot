@@ -1,0 +1,5 @@
+WHAT THIS IS
+
+This is a project that is intended to make it easy to create programs that use the Jabber or XMPP protocols as transport layers for their network communication.  Jabber and XMPP are the same protocol with some small differences in the mechanism for authentication, and XMPP adds a mechanism for introducing an initial SSL negotiation.  Note that since my server is a Jabber server, and my tasks are intended to run against my server, the initial version of this software does Jabber, and not XMPP.  However, you may rest assured that I will support standard XMPP soon enough.
+
+Clearly this is a work in progress.  I do features as I need them, and it has reached the state where I can use it for the application I originally developed it for, a robot to IM affirmations to my wife.
