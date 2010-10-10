@@ -23,12 +23,15 @@ private:
   std::string *m_username;
   std::string *m_password;
   std::string *m_resource;
-  // const std::string *render(const std::string *id, const std::string &body) const;
 
 public:
+  // With arguments means "set"
   JabberIqAuth(const std::string &username, const std::string &password, const std::string &resource);
+  // Without arguments means "get"
+  JabberIqAuth(void);
   virtual ~JabberIqAuth(void);
 
+  // How does this alter the retrieved value?
   virtual const std::string *render(const std::string *id) const;
   static Stanza *parse(const JabberElementNode *query);
 };

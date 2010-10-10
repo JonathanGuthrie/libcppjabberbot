@@ -15,23 +15,29 @@
  */
 #include <sstream>
 
-#include "jabber-iq-roster.hpp"
+#include "jabber-iq-agents.hpp"
 
-JabberIqRoster::JabberIqRoster(void) {
-  Namespace("jabber:iq:roster");
-  Type("get");
+JabberIqAgents::JabberIqAgents(void) {
+  Namespace("jabber:iq:agents");
 }
 
 
-JabberIqRoster::~JabberIqRoster(void) {
+JabberIqAgents::~JabberIqAgents(void) {
 }
 
 
-const std::string *JabberIqRoster::render(const std::string *id) const {
-  return renderIqStanza(id, Namespace(), "");
+const std::string *JabberIqAgents::render(const std::string *id) const {
+  std::ostringstream body;
+
+  return renderIqStanza(id, Namespace(), body.str());
 }
 
 
-Stanza *JabberIqRoster::parse(const JabberElementNode *query) {
-  return new JabberIqRoster();
+Stanza *JabberIqAgents::parse(const JabberElementNode *query) {
+  for (jabberNodeList_t::const_iterator i=query->m_children.begin(); i != query->m_children.end(); ++i) {
+    const JabberElementNode *node = dynamic_cast<JabberElementNode *>(*i);
+    if (NULL != node) {
+    }
+  }
+  return new JabberIqAgents();
 }

@@ -16,14 +16,8 @@ CC=g++
 CXXFLAGS=-Wall -g `pkg-config libxml++-2.6 --cflags` -fPIC
 LDFLAGS=-lssl -lexpat `pkg-config libxml++-2.6 --libs` -shared -Wl,-soname,libjabber-bot.so.1
 
-libjabber-bot.so: libjabber-bot.so.1.1 libjabber-bot.so.1
-	ln -s libjabber-bot.so.1.1 libjabber-bot.so
-
-libjabber-bot.so.1: libjabber-bot.so.1.1
-	ln -s libjabber-bot.so.1.1 libjabber-bot.so.1
-
 libjabber-bot.so.1.1:  stanza.o jabbernode.o jabbersession.o socket.o \
-	iq-stanza.o jabber-iq-auth.o jabber-iq-register.o jabber-iq-roster.o \
+	iq-stanza.o jabber-iq-agent.o jabber-iq-agents.o jabber-iq-auth.o jabber-iq-register.o jabber-iq-roster.o \
 	presence-stanza.o message-stanza.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
@@ -38,6 +32,8 @@ SOURCES=stanza.cpp \
 	jabbersession.cpp \
 	socket.cpp \
 	iq-stanza.cpp \
+	jabber-iq-agent.cpp \
+	jabber-iq-agents.cpp \
 	jabber-iq-auth.cpp \
 	jabber-iq-register.cpp \
 	jabber-iq-roster.cpp \

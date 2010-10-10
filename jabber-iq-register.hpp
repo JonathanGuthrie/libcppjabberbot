@@ -26,7 +26,10 @@ private:
   // const std::string *render(const std::string &id, const std::string &body) const;
 
 public:
+  // With arguments means "set"
   JabberIqRegister(const std::string &username, const std::string &password, const std::string &email);
+  // Without arguments means "get"
+  JabberIqRegister(void);
   virtual ~JabberIqRegister(void);
 
   virtual const std::string *render(const std::string *id) const;

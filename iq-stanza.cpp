@@ -28,15 +28,35 @@ parseMap_t *IqStanza::m_namespaceParsers = NULL;
 IqStanza::IqStanza(void) {
   if (NULL == m_namespaceParsers) {
     m_namespaceParsers = new parseMap_t;
-    
+
+#if 0
+    // Agent and agents are superseded by browse
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:agent", JabberIqAgent::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:agents", JabberIqAgents::parse));
+#endif
     m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:auth", JabberIqAuth::parse));
+#if 0
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:autoupdate", JabberIqAutoupdate::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:browse", JabberIqBrowse::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:conference", JabberIqConference::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:gateway", JabberIqGateway::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:last", JabberIqLast::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:oob", JabberIqOob::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:private", JabberIqPrivate::parse));
+#endif // 0
     m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:register", JabberIqRegister::parse));
     m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:roster", JabberIqRoster::parse));
+#if 0
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:search", JabberIqSearch::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:time", JabberIqTime::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:version", JabberIqVersion::parse));
+#endif // 0
   }
 }
 
 
-IqStanza::~IqStanza(void) {}
+IqStanza::~IqStanza(void) {
+}
 
 const std::string *IqStanza::renderIqStanza(const std::string *id, const std::string *name_space, const std::string &body) const {
   std::ostringstream query;

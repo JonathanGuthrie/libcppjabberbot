@@ -24,7 +24,6 @@ typedef std::map<std::string, stanzaParser> parseMap_t;
 
 class IqStanza : public Stanza {
 private:
-  std::string *m_password;
   static parseMap_t *m_namespaceParsers;
 
 public:

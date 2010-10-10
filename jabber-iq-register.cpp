@@ -31,6 +31,15 @@ JabberIqRegister::JabberIqRegister(const std::string &username, const std::strin
 }
 
 
+JabberIqRegister::JabberIqRegister(void) {
+  Namespace("jabber:iq:register");
+  Type("get");
+  m_username = NULL;
+  m_password = NULL;
+  m_email = NULL;
+}
+
+
 JabberIqRegister::~JabberIqRegister(void) {
   delete m_username;
   delete m_password;
@@ -41,8 +50,12 @@ JabberIqRegister::~JabberIqRegister(void) {
 const std::string *JabberIqRegister::render(const std::string *id) const {
   std::ostringstream body;
 
-  body << "<username>" << *m_username << "</username>";
-  body << "<password>" << *m_password << "</password>";
+  if (NULL != m_username) {
+    body << "<username>" << *m_username << "</username>";
+  }
+  if (NULL != m_password) {
+    body << "<password>" << *m_password << "</password>";
+  }
   if (NULL != m_email) {
     body << "<email>" << *m_email << "</email>";
   }

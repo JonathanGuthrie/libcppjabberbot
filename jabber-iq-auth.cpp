@@ -31,6 +31,15 @@ JabberIqAuth::JabberIqAuth(const std::string &username, const std::string &passw
 }
 
 
+JabberIqAuth::JabberIqAuth(void) {
+  Namespace("jabber:iq:auth");
+  Type("get");
+  m_username = NULL;
+  m_password = NULL;
+  m_resource = NULL;
+}
+
+
 JabberIqAuth::~JabberIqAuth(void) {
   delete m_username;
   delete m_password;
@@ -41,8 +50,12 @@ JabberIqAuth::~JabberIqAuth(void) {
 const std::string *JabberIqAuth::render(const std::string *id) const {
   std::ostringstream body;
 
-  body << "<username>" << *m_username << "</username>";
-  body << "<password>" << *m_password << "</password>";
+  if (NULL != m_username) {
+    body << "<username>" << *m_username << "</username>";
+  }
+  if (NULL != m_password) {
+    body << "<password>" << *m_password << "</password>";
+  }
   if (NULL != m_resource) {
     body << "<resource>" << *m_resource << "</resource>";
   }

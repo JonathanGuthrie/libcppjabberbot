@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if !defined(_JABBER_IQ_ROSTER_HPP_INCLUDED_)
-#define _JABBER_IQ_ROSTER_HPP_INCLUDED_
+#if !defined(_JABBER_IQ_AGENT_HPP_INCLUDED_)
+#define _JABBER_IQ_AGENT_HPP_INCLUDED_
 
 #include "iq-stanza.hpp"
 
-class JabberIqRoster : public IqStanza {
+class JabberIqAgent : public IqStanza {
 private:
+  // SYZYGY -- what goes here is a collection of key/value pairs that represent the tags.  The tag name is the key and the
+  // text is the value
 
 public:
   // Without arguments means "get"
-  JabberIqRoster();
-  virtual ~JabberIqRoster(void);
+  JabberIqAgent(void);
+  virtual ~JabberIqAgent(void);
 
   virtual const std::string *render(const std::string *id) const;
   static Stanza *parse(const JabberElementNode *query);
 };
 
-#endif // !defined(_JABBER_IQ_ROSTER_HPP_INCLUDED_)
+#endif // !defined(_JABBER_IQ_AGENT_HPP_INCLUDED_)
