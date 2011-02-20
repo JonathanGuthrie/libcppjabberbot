@@ -10,7 +10,7 @@ libjabber-bot.so.1: libjabber-bot.so.1.1
 
 libjabber-bot.so.1.1:  stanza.o jabbernode.o jabbersession.o socket.o \
 	iq-stanza.o jabber-iq-auth.o jabber-iq-register.o jabber-iq-roster.o \
-	presence-stanza.o message-stanza.o
+	presence-stanza.o message-stanza.o features-stanza.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 %.d: %.cpp
@@ -28,7 +28,8 @@ SOURCES=stanza.cpp \
 	jabber-iq-register.cpp \
 	jabber-iq-roster.cpp \
 	presence-stanza.cpp \
-	message-stanza.cpp
+	message-stanza.cpp \
+	features-stanza.cpp
 
 include $(SOURCES:.cpp=.d)
 

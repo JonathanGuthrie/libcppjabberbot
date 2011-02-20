@@ -7,6 +7,7 @@
 #include "iq-stanza.hpp"
 #include "presence-stanza.hpp"
 #include "message-stanza.hpp"
+#include "features-stanza.hpp"
 
 #define BUFFERLENGTH 2000
 
@@ -89,7 +90,7 @@ void JabberSession::on_start_element(const Glib::ustring &name, const AttributeL
   }
   else {
     if (1 == m_depth) {
-      if (("message" == name) || ("presence" == name) || ("iq" == name)) {
+      if (("message" == name) || ("presence" == name) || ("iq" == name) || ("stream:features" == name)) {
 	m_node = new JabberElementNode(NULL, name, attributes);
       }
       else {
