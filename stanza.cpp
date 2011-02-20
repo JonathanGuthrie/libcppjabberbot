@@ -19,6 +19,7 @@
 #include "iq-stanza.hpp"
 #include "presence-stanza.hpp"
 #include "message-stanza.hpp"
+#include "features-stanza.hpp"
 
 Stanza::Stanza(void) {
   m_to = NULL;
@@ -182,6 +183,9 @@ Stanza *Stanza::parse(const JabberElementNode *root) {
   }
   if ("message" == root->m_name) {
     result = MessageStanza::parse(root);
+  }
+  if ("stream:features" == root->m_name) {
+    result = FeaturesStanza::parse(root);
   }
   return result;
 }

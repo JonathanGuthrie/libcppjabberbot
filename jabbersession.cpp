@@ -25,7 +25,7 @@
 
 #define BUFFERLENGTH 2000
 
-JabberSession::JabberSession(const std::string &host, unsigned short port, bool isSecure) : m_s(host, port, isSecure) {
+JabberSession::JabberSession(const std::string &host, unsigned short port, bool isSecure, const std::string *jabberServerName) : m_s(host, port, isSecure) {
   m_state = Connected;
   m_depth = 0;
   m_idCount = 0;
@@ -36,12 +36,15 @@ JabberSession::JabberSession(const std::string &host, unsigned short port, bool 
   m_presenceContext = NULL;
   m_messageHandler = NULL;
   m_messageContext = NULL;
+  if (NULL == jabberServerName) {
+    jabberServerName = &host;
+  }
 
   if (0 == pthread_create(&m_listenerThread, NULL, ListenerThreadFunction, this)) {
     // SYZYGY -- RFC 3920 specifies an "xml:lang" attribute and a "version" attribute
-    // SYZYGY -- I need to configure the "to" somehow
-    std::string xml = "<?xml version='1.0'?><stream:stream to='jabber.brokersys.com' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>";
-    m_s.Send(xml);
+    std::ostringstream xml;
+    xml << "<?xml version='1.0'?><stream:stream to='" << *jabberServerName << "' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>";
+    m_s.Send(xml.str());
     pthread_mutex_lock(&m_stateMutex);
     while (m_state < GotStreamTag) {
       pthread_mutex_unlock(&m_stateMutex);
@@ -104,7 +107,7 @@ void JabberSession::on_start_element(const Glib::ustring &name, const AttributeL
   }
   else {
     if (1 == m_depth) {
-      if (("message" == name) || ("presence" == name) || ("iq" == name)) {
+      if (("message" == name) || ("presence" == name) || ("iq" == name) || ("stream:features" == name)) {
 	m_node = new JabberElementNode(NULL, name, attributes);
       }
       else {
@@ -249,8 +252,7 @@ void *JabberSession::ListenerThreadFunction(void *data) {
 
 const Stanza *JabberSession::SendMessage(const Stanza &request,  bool expectingReply) {
   jabberEvent_t *e = NULL;
-  // SYZYGY -- I need to rework this logic because currently there's no way to send a message that
-  // SYZYGY -- doesn't have an ID
+
   const std::string *xml;
   if (expectingReply) {
     pthread_mutex_lock(&m_stateMutex);

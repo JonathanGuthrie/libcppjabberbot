@@ -38,7 +38,8 @@ SOURCES=stanza.cpp \
 	jabber-iq-register.cpp \
 	jabber-iq-roster.cpp \
 	presence-stanza.cpp \
-	message-stanza.cpp
+	message-stanza.cpp \
+	features-stanza.cpp
 
 include $(SOURCES:.cpp=.d)
 
