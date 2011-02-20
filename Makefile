@@ -18,7 +18,7 @@ LDFLAGS=-lssl -lexpat `pkg-config libxml++-2.6 --libs` -shared -Wl,-soname,libja
 
 libjabber-bot.so.1.1:  stanza.o jabbernode.o jabbersession.o socket.o \
 	iq-stanza.o jabber-iq-agent.o jabber-iq-agents.o jabber-iq-auth.o jabber-iq-register.o jabber-iq-roster.o \
-	presence-stanza.o message-stanza.o
+	presence-stanza.o message-stanza.o features-stanza.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 %.d: %.cpp
