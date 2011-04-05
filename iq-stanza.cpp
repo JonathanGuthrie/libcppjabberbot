@@ -83,6 +83,9 @@ Stanza *IqStanza::parse(const JabberElementNode *root) {
 	result = new IqStanza();
       }
     }
+    else {
+      result = new IqStanza();
+    }
   }
   if (NULL != result) {
     if ("" != errorMessage) {
