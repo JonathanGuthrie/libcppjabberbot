@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010 Jonathan R. Guthrie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 // #include <iostream>
 #include <unistd.h>
 #include <sstream>
@@ -11,7 +26,7 @@
 
 #define BUFFERLENGTH 2000
 
-JabberSession::JabberSession(const std::string &host, unsigned short port, bool isSecure) : m_s(host, port, isSecure) {
+JabberSession::JabberSession(const std::string &host, unsigned short port, bool isSecure, const std::string *jabberServerName) : m_s(host, port, isSecure) {
   m_state = Connected;
   m_depth = 0;
   m_idCount = 0;
@@ -22,12 +37,15 @@ JabberSession::JabberSession(const std::string &host, unsigned short port, bool 
   m_presenceContext = NULL;
   m_messageHandler = NULL;
   m_messageContext = NULL;
+  if (NULL == jabberServerName) {
+    jabberServerName = &host;
+  }
 
   if (0 == pthread_create(&m_listenerThread, NULL, ListenerThreadFunction, this)) {
     // SYZYGY -- RFC 3920 specifies an "xml:lang" attribute and a "version" attribute
-    // SYZYGY -- I need to configure the "to" somehow
-    std::string xml = "<?xml version='1.0'?><stream:stream to='jabber.brokersys.com' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>";
-    m_s.Send(xml);
+    std::ostringstream xml;
+    xml << "<?xml version='1.0'?><stream:stream to='" << *jabberServerName << "' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>";
+    m_s.Send(xml.str());
     pthread_mutex_lock(&m_stateMutex);
     while (m_state < GotStreamTag) {
       pthread_mutex_unlock(&m_stateMutex);
@@ -235,8 +253,7 @@ void *JabberSession::ListenerThreadFunction(void *data) {
 
 const Stanza *JabberSession::SendMessage(const Stanza &request,  bool expectingReply) {
   jabberEvent_t *e = NULL;
-  // SYZYGY -- I need to rework this logic because currently there's no way to send a message that
-  // SYZYGY -- doesn't have an ID
+
   const std::string *xml;
   if (expectingReply) {
     pthread_mutex_lock(&m_stateMutex);

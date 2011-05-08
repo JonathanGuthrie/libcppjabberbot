@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010 Jonathan R. Guthrie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include <sstream>
 
 #include "jabber-iq-auth.hpp"
@@ -16,6 +31,15 @@ JabberIqAuth::JabberIqAuth(const std::string &username, const std::string &passw
 }
 
 
+JabberIqAuth::JabberIqAuth(void) {
+  Namespace("jabber:iq:auth");
+  Type("get");
+  m_username = NULL;
+  m_password = NULL;
+  m_resource = NULL;
+}
+
+
 JabberIqAuth::~JabberIqAuth(void) {
   delete m_username;
   delete m_password;
@@ -26,8 +50,12 @@ JabberIqAuth::~JabberIqAuth(void) {
 const std::string *JabberIqAuth::render(const std::string *id) const {
   std::ostringstream body;
 
-  body << "<username>" << *m_username << "</username>";
-  body << "<password>" << *m_password << "</password>";
+  if (NULL != m_username) {
+    body << "<username>" << *m_username << "</username>";
+  }
+  if (NULL != m_password) {
+    body << "<password>" << *m_password << "</password>";
+  }
   if (NULL != m_resource) {
     body << "<resource>" << *m_resource << "</resource>";
   }

@@ -11,21 +11,29 @@ done)  Extend the callback framework to allow callbacks for stanzas that don't h
 
 done)  Add the other stanzas needed to implement the affirmation bot
 
-7) Add a mechanism to allow for plugins for stanza types and build the extant
-stanza types as plugins
+7)  Doxygen comments and a mechanism to build documentation from them
 
-8) Add X-substanzas, and the other namespaces that go with them
+8)  The other namespaces in the book
 
-9) Doxygen comments and a mechanism to build documentation from them
+9)  Add X-substanzas, and the other namespaces that go with them
 
 10)  Add some mechanism for doing registration the way you're supposed to, by 
 doing a get on the registration to get the fields and then making sure they're
 all there.
 
-11)  Implement XMPP as well as (or instead of) Jabber
+11)  Split the socket class out.  (Too bad boost won't do the right job.)
 
-12)  Licensing.  Put the code under a specific license and all the BS that implies.
+12)  Implement XMPP as well as (or instead of) Jabber
 
-13)  Define a subscription management system that wraps the low-level operations with higher-level logic.
+13)  Licensing.  Put the code under a specific license and all the BS that implies.
 
-13)  Other things that occur to me.
+14)  Define a subscription management system that wraps the low-level operations with higher-level logic.
+
+15)  Add a default stanza type so the system is never confused about an incoming stanza
+
+16)  Add a mechanism to allow for plugins for stanza types and build the extant
+stanza types as plugins.  Plugins?  If my stanzas are used for both sending and receiving,
+then how do I send one that's in a plugin.  Table this until I have a clue.  (Could be
+a while.)
+
+17)  Other things that occur to me.
