@@ -43,67 +43,85 @@ Stanza::~Stanza(void) {
 
 void Stanza::To(const std::string *to) {
   delete m_to;
-  m_to = to;
+  m_to = NULL;
+  if (NULL != to) {
+    m_to = new std::string(*to);
+  }
 }
 
 
 void Stanza::To(const std::string &to) {
-  To(new std::string(to));
+  To(&to);
 }
 
 
 void Stanza::From(const std::string *from) {
   delete m_from;
-  m_from = from;
+  m_from = NULL;
+  if (NULL != from) {
+    m_from = new std::string(*from);
+  }
 }
 
 
 void Stanza::From(const std::string &from) {
-  From(new std::string(from));
+  From(&from);
 }
 
 
 void Stanza::Type(const std::string *type) {
   delete m_type;
-  m_type = type;
+  m_type = NULL;
+  if (NULL != type) {
+    m_type = new std::string(*type);
+  }
 }
 
 
 void Stanza::Type(const std::string &type) {
-  Type(new std::string(type));
+  Type(&type);
 }
 
 
 void Stanza::Id(const std::string *id) {
   delete m_id;
-  m_id = id;
+  m_id = NULL;
+  if (NULL != id) {
+    m_id = new std::string(*id);
+  }
 }
 
 
 void Stanza::Id(const std::string &id) {
-  Id(new std::string(id));
+  Id(&id);
 }
 
 
 void Stanza::Namespace(const std::string *name_space) {
   delete m_namespace;
-  m_namespace = name_space;
+  m_namespace = NULL;
+  if (name_space != NULL) {
+    m_namespace = new std::string(*name_space);
+  }
 }
 
 
 void Stanza::Namespace(const std::string &name_space) {
-  Namespace(new std::string(name_space));
+  Namespace(&name_space);
 }
 
 
 void Stanza::ErrorMessage(const std::string *errorMessage) {
   delete m_errorMessage;
-  m_errorMessage = errorMessage;
+  m_errorMessage = NULL;
+  if (NULL != errorMessage) {
+    m_errorMessage = new std::string(*errorMessage);
+  }
 }
 
 
 void Stanza::ErrorMessage(const std::string &errorMessage) {
-  ErrorMessage(new std::string(errorMessage));
+  ErrorMessage(&errorMessage);
 }
 
 
