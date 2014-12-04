@@ -37,4 +37,14 @@ protected:
   const std::string *renderIqStanza(const std::string *id, const std::string *name_space, const std::string &body) const;
 };
 
+class BareIqStanza : public IqStanza {
+public:
+  // Never any arguments because it just sends an iq stanza by itself
+  BareIqStanza(void);
+
+  virtual ~BareIqStanza(void);
+
+  virtual const std::string *render(const std::string *id) const;
+};
+
 #endif // !defined(_IQ_STANZA_HPP_INCLUDED_)

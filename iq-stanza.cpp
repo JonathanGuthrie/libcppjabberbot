@@ -139,3 +139,13 @@ Stanza *IqStanza::parse(const JabberElementNode *root) {
   }
   return result;
 }
+
+
+BareIqStanza::BareIqStanza(void) { }
+
+BareIqStanza::~BareIqStanza(void) { }
+
+const std::string *BareIqStanza::render(const std::string *id) const {
+  return renderStanza(id, "iq", "");
+}
+

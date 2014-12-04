@@ -131,7 +131,7 @@ void JabberSession::on_end_element(const Glib::ustring &name) {
   pthread_mutex_lock(&m_stateMutex);
   // std::cout << "on_end_element(): " << name << std::endl;
   --m_depth;
-  if (NULL != m_node->m_parent) {
+  if ((NULL != m_node) && (NULL != m_node->m_parent)) {
     m_node = m_node->m_parent;
   }
   if (1 == m_depth) {
