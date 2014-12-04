@@ -20,6 +20,7 @@
 
 #include "iq-stanza.hpp"
 #include "jabber-iq-auth.hpp"
+#include "jabber-iq-ping.hpp"
 #include "jabber-iq-register.hpp"
 #include "jabber-iq-roster.hpp"
 
@@ -46,6 +47,7 @@ IqStanza::IqStanza(void) {
 #endif // 0
     m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:register", JabberIqRegister::parse));
     m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:roster", JabberIqRoster::parse));
+    m_namespaceParsers->insert(parseMap_t::value_type("urn:xmpp:ping", JabberIqPing::parse));
 #if 0
     m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:search", JabberIqSearch::parse));
     m_namespaceParsers->insert(parseMap_t::value_type("jabber:iq:time", JabberIqTime::parse));
@@ -85,7 +87,7 @@ Stanza *IqStanza::parse(const JabberElementNode *root) {
     const std::string *name_space = NULL;
     for (jabberNodeList_t::const_iterator i=root->m_children.begin(); i != root->m_children.end(); ++i) {
       const JabberElementNode *node = dynamic_cast<JabberElementNode *>(*i);
-      if ((NULL != node) && ("query" == node->m_name)) {
+      if ((NULL != node) && (("query" == node->m_name) || ("ping" == node->m_name))) {
 	query_node = node;
 	for(xmlpp::SaxParser::AttributeList::const_iterator j = node->m_attributes.begin(); j != node->m_attributes.end(); ++j) {
 	  if ("xmlns" == j->name) {
